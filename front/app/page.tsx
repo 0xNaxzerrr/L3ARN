@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Shield, Certificate, Clock } from "lucide-react";
+import { ArrowRight, Shield, Clock, Folder  } from "lucide-react";
 
 export default function Home() {
   return (
@@ -37,7 +37,7 @@ export default function Home() {
             </p>
           </div>
           <div className="feature-card">
-            <Certificate className="w-8 h-8 mb-4 text-purple-400" />
+            <Folder className="w-8 h-8 mb-4 text-purple-400" />
             <h3 className="text-lg font-semibold mb-2">Easy Management</h3>
             <p className="text-gray-300">
               Issue and manage certificates with a simple and intuitive interface
