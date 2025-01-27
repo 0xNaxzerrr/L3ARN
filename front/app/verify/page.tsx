@@ -18,8 +18,8 @@ export default function VerifyPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">Verify Certificate</h1>
+    <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-gray-900">
+      <h1 className="text-3xl font-bold gradient-text mb-8">Verify Certificate</h1>
 
       <div className="flex gap-4 mb-8">
         <Input
@@ -29,7 +29,7 @@ export default function VerifyPage() {
           onChange={(e) => setCertificateId(e.target.value)}
           className="flex-grow"
         />
-        <Button onClick={handleVerify} disabled={!certificateId}>
+        <Button onClick={handleVerify} disabled={!certificateId} className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white">
           <Search className="w-4 h-4 mr-2" />
           Verify
         </Button>
