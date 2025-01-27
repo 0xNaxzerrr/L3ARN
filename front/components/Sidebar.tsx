@@ -14,9 +14,9 @@ export function Sidebar() {
   const pathname = usePathname()
 
   return (
-    <div className="flex flex-col w-64 bg-white bg-opacity-10 backdrop-blur-lg shadow-xl">
+    <div className="flex flex-col w-64 gradient-bg text-white shadow-xl">
       <div className="flex items-center justify-center h-16 border-b border-white border-opacity-20">
-        <span className="text-2xl font-bold text-white">L3ARN</span>
+        <span className="text-2xl font-bold">L3ARN</span>
       </div>
       <nav className="flex-1 overflow-y-auto py-4">
         <ul className="space-y-2 px-3">
@@ -43,7 +43,7 @@ export function Sidebar() {
             className="w-10 h-10 rounded-full mr-3 border-2 border-white shadow-sm"
           />
           <div>
-            <span className="text-sm font-medium block text-white">John Doe</span>
+            <span className="text-sm font-medium block">John Doe</span>
             <span className="text-xs text-white text-opacity-80">Student</span>
           </div>
         </div>
