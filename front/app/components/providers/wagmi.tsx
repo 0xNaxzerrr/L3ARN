@@ -1,11 +1,13 @@
 'use client';
 
-import { createWeb3Modal } from '@web3modal/wagmi/react'
-import { WagmiConfig as WagmiProvider, createConfig } from 'wagmi'
+import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
+import { WagmiConfig as WagmiProvider } from 'wagmi'
 import { mainnet, sepolia } from 'wagmi/chains'
-import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
 
-const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || ''
+// Vérifie si nous sommes côté client avant d'accéder à process.env
+const projectId = typeof window !== 'undefined' 
+  ? process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || ''
+  : ''
 
 const metadata = {
   name: 'L3ARN Certificates',
@@ -15,15 +17,23 @@ const metadata = {
 }
 
 const chains = [mainnet, sepolia]
-const wagmiConfig = createConfig({
-  chains,
-  connectors: [
-    new WalletConnectConnector({ chains, options: { projectId, metadata } })
-  ],
-})
 
-createWeb3Modal({ wagmiConfig, projectId, chains })
+// Créer la configuration uniquement côté client
+const wagmiConfig = typeof window !== 'undefined'
+  ? defaultWagmiConfig({ chains, projectId, metadata })
+  : null
+
+// Initialiser Web3Modal uniquement côté client
+if (typeof window !== 'undefined' && wagmiConfig && projectId) {
+  createWeb3Modal({ wagmiConfig, projectId, chains })
+}
 
 export function WagmiConfig({ children }: { children: React.ReactNode }) {
+  // Rendu côté serveur sans WagmiProvider
+  if (!wagmiConfig) {
+    return <>{children}</>
+  }
+
+  // Rendu côté client avec WagmiProvider
   return <WagmiProvider config={wagmiConfig}>{children}</WagmiProvider>
 }
