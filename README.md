@@ -24,15 +24,14 @@ L3ARN/
 
 #### Paramètres de Connexion Core Wallet
 - **Network Name**: ESGI
-- **RPC URL**: http://127.0.0.1:42835/ext/bc/2uaYY41AUuYD6tWMUkF8e8tnqN4LRd2ByhjMKE3vcUDYRQJ4gG/rpc
-- **Chain ID**: 43113
+- **RPC URL**: http://127.0.0.1:40679/ext/bc/2jD94QhBWwFPfjgKkDjqZdXMAmPvnzC75UVAUxU4iGmsT8MSmT/rpc
+- **Chain ID**: 99999
 - **Symbol**: AVAX
 - **Token Name**: AVAX Token
 
 #### Identifiants du Subnet
-- **Subnet ID**: GEieSy2doZ96bpMo5CuHPaX1LvaxpKZ9C72L22j94t6YyUb6X
-- **Blockchain ID (CB58)**: 2uaYY41AUuYD6tWMUkF8e8tnqN4LRd2ByhjMKE3vcUDYRQJ4gG
-- **Blockchain ID (HEX)**: 0xfb14e6e3b8f6032369f7f4b90d40023911857fb7741f58a01ba38dccf7e79d1c
+- **Subnet ID**: 7ELK83TmkxE17TSALxeQH7mGErDV9kpp1hX4hmvvdcuNBDbS7
+- **Blockchain ID (CB58)**: 2jD94QhBWwFPfjgKkDjqZdXMAmPvnzC75UVAUxU4iGmsT8MSmT
 - **VM ID**: XXpfuQdvmhZiZ128E1bXJsiR4JJHGLpw5YSvVRWtgHGUv1osd
 
 #### Comptes de Test
@@ -44,6 +43,10 @@ L3ARN/
 2. **Validator Manager Owner**
    - Adresse: 0x5c652596dbe51ed3d5DDA47f2790236FB6c77537
    - Balance: 10 AVAX
+
+3. **ICM Account**
+   - Adresse: 0x2875618c9bAeE0C1e487f411327396619D7DF0A5
+   - Balance: 600 AVAX
 
 #### Smart Contracts Déployés
 - **PoA Validator Manager**: 0x0C0DEbA5E0000000000000000000000000000000
@@ -101,6 +104,9 @@ cd ..
 1. **Créer le subnet**
 ```bash
 avalanche subnet create ESGI
+# Choisir Subnet-EVM
+# Choisir Proof of Authority
+# Chain ID: 99999
 ```
 
 2. **Déployer localement**
@@ -110,15 +116,15 @@ avalanche subnet deploy ESGI --local
 
 ### Configuration de Core Wallet
 
-1. Ouvrir Core Wallet et ajouter un nouveau réseau:
-   - Nom du réseau: ESGI
-   - URL RPC: http://127.0.0.1:42835/ext/bc/2uaYY41AUuYD6tWMUkF8e8tnqN4LRd2ByhjMKE3vcUDYRQJ4gG/rpc
-   - Chain ID: 43113
+1. Ajouter un nouveau réseau:
+   - Network Name: ESGI
+   - RPC URL: http://127.0.0.1:40679/ext/bc/2jD94QhBWwFPfjgKkDjqZdXMAmPvnzC75UVAUxU4iGmsT8MSmT/rpc
+   - Chain ID: 99999
    - Symbol: AVAX
-   - Nom du Token: AVAX Token
+   - Token Name: AVAX Token
 
 2. Importer le compte de test:
-   - Dans Core Wallet, aller dans Paramètres > "Manage Keys"
+   - Dans Core Wallet, aller dans Settings > "Manage Keys"
    - Importer la clé privée: 56289e99c94b6912bfc12adc093c9b51124f0dc54ac7a766b2bc5ccf558d8027
 
 ## Développement
@@ -134,7 +140,7 @@ forge build
 forge test
 
 # Déployer sur le subnet local
-forge script script/Deploy.s.sol --rpc-url http://127.0.0.1:42835/ext/bc/2uaYY41AUuYD6tWMUkF8e8tnqN4LRd2ByhjMKE3vcUDYRQJ4gG/rpc
+forge script script/Deploy.s.sol --rpc-url http://127.0.0.1:40679/ext/bc/2jD94QhBWwFPfjgKkDjqZdXMAmPvnzC75UVAUxU4iGmsT8MSmT/rpc
 ```
 
 ### Frontend
@@ -148,20 +154,6 @@ npm run dev
 npm run build
 ```
 
-## Tests
-
-### Smart Contracts
-```bash
-cd contracts
-forge test
-```
-
-### Frontend
-```bash
-cd front
-npm test
-```
-
 ## Notes Importantes
 - Le nœud local doit rester actif pour interagir avec le subnet
 - Les données sont réinitialisées à chaque redémarrage du subnet
@@ -169,7 +161,21 @@ npm test
 
 ## Logs et Debugging
 - Logs des nœuds: `/home/naxzerrr/.avalanche-cli/local/ESGI-local-node-local-network/node1/logs`
-- Backend controller: `/home/naxzerrr/.avalanche-cli/runs/server_20250127_121231/avalanche-cli-backend.log`
+- Backend controller: `/home/naxzerrr/.avalanche-cli/local/ESGI-local-node-local-network/server.log`
+
+## Nodes Information
+### Primary Nodes
+- **Node1**: 
+  - NodeID: NodeID-7Xhw2mDxuDS44j42TCB6U5579esbSt3Lg
+  - Endpoint: http://127.0.0.1:9650
+- **Node2**:
+  - NodeID: NodeID-MFrZFVCXPv5iCn6M9K6XduxGTYp891xXZ
+  - Endpoint: http://127.0.0.1:9652
+
+### L1 Node
+- **Node1**:
+  - NodeID: NodeID-7EbpPdPtX3f8m8QuQr8VWCN7dAzB881rx
+  - Endpoint: http://127.0.0.1:40679
 
 ## License
 [MIT](LICENSE)
