@@ -1,9 +1,14 @@
-import { Inter } from 'next/font/google'
-import './globals.css'
-import { WagmiConfig } from '@/components/providers/wagmi'
-import { Sidebar } from '@/components/layout/Sidebar'
+import "./globals.css"
+import { Inter } from "next/font/google"
+import { Sidebar } from "@/components/Sidebar"
+import { TopBar } from "@/components/TopBar"
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ["latin"] })
+
+export const metadata = {
+  title: "Blockchain Certificates",
+  description: "Manage and verify academic certificates on the blockchain",
+}
 
 export default function RootLayout({
   children,
@@ -12,16 +17,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <WagmiConfig>
-          <div className="flex h-screen bg-gray-50">
-            <Sidebar />
-            <div className="flex-1 overflow-x-hidden overflow-y-auto">
-              {children}
-            </div>
+      <body className={`${inter.className} text-white`}>
+        <div className="flex h-screen gradient-bg">
+          <Sidebar />
+          <div className="flex-1 flex flex-col overflow-hidden">
+            <TopBar />
+            <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">{children}</main>
           </div>
-        </WagmiConfig>
+        </div>
       </body>
     </html>
   )
 }
+

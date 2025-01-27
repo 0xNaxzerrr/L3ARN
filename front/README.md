@@ -1,93 +1,36 @@
-# L3ARN Frontend
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-Frontend application for the L3ARN Certificate Management System. This application allows students and administrators to manage academic certificates stored on the blockchain.
+## Getting Started
 
-## Features
+First, run the development server:
 
-- Connect with Web3 wallet (WalletConnect)
-- View and verify academic certificates
-- Issue new certificates (admin only)
-- Revoke existing certificates (admin only)
-- Modern and responsive UI
-
-## Prerequisites
-
-- Node.js 18+
-- Yarn or npm
-- MetaMask or any WalletConnect compatible wallet
-
-## Installation
-
-1. Clone the repository:
 ```bash
-git clone https://github.com/0xNaxzerrr/L3ARN.git
-cd L3ARN/front
-```
-
-2. Install dependencies:
-```bash
-yarn install
+npm run dev
 # or
-npm install
-```
-
-3. Create a `.env.local` file with the following variables:
-```env
-NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=your_project_id
-NEXT_PUBLIC_CONTRACT_ADDRESS=deployed_contract_address
-```
-
-4. Start the development server:
-```bash
 yarn dev
 # or
-npm run dev
+pnpm dev
+# or
+bun dev
 ```
 
-5. Open [http://localhost:3000](http://localhost:3000) with your browser.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Project Structure
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-```
-app/
-├── layout.tsx           # Root layout with providers
-├── page.tsx             # Home page
-├── admin/               # Admin section
-├── student/             # Student certificate view
-├── verify/              # Certificate verification
-├── components/          # Reusable components
-├── lib/                 # Utilities and configurations
-└── hooks/               # Custom React hooks
-```
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Technologies Used
+## Learn More
 
-- Next.js 14 (App Router)
-- TypeScript
-- Tailwind CSS
-- wagmi
-- WalletConnect
-- Lucide Icons
+To learn more about Next.js, take a look at the following resources:
 
-## Contributing
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-1. Create a new branch:
-```bash
-git checkout -b feature/your-feature-name
-```
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-2. Make your changes and commit:
-```bash
-git commit -m "Add some feature"
-```
+## Deploy on Vercel
 
-3. Push to your branch:
-```bash
-git push origin feature/your-feature-name
-```
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-4. Create a Pull Request
-
-## License
-
-MIT
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
