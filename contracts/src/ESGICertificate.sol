@@ -1,33 +1,21 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
 /**
  * @title ESGICertificate
- * @author Naxzerrr
  * @notice This contract manages academic certificates as NFTs for ESGI students
- * @dev Implements ERC721 with URI storage and role-based access control
+ * @dev Implements ERC721URIStorage with role-based access control
  */
-contract ESGICertificate is ERC721, ERC721URIStorage, AccessControl {
+contract ESGICertificate is ERC721URIStorage, AccessControl {
     /// @notice Role identifier for addresses authorized to mint certificates
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
     /// @notice Counter for token IDs
     uint256 private _nextTokenId;
 
-    /**
-     * @notice Structure containing all certificate data
-     * @param studentName Full name of the student
-     * @param studentId Unique identifier of the student
-     * @param courseName Name of the course or degree
-     * @param graduationYear Year of graduation
-     * @param grade Academic grade or distinction
-     * @param isValid Current validity status of the certificate
-     * @param timestamp Time when the certificate was issued
-     */
     struct CertificateData {
         string studentName;
         uint256 studentId;
@@ -44,13 +32,6 @@ contract ESGICertificate is ERC721, ERC721URIStorage, AccessControl {
     /// @notice Mapping from student ID to their certificate token IDs
     mapping(uint256 => uint256[]) public studentCertificates;
 
-    /**
-     * @notice Emitted when a new certificate is issued
-     * @param tokenId The ID of the newly minted certificate
-     * @param studentId The ID of the student receiving the certificate
-     * @param courseName The name of the completed course
-     * @param timestamp When the certificate was issued
-     */
     event CertificateIssued(
         uint256 indexed tokenId,
         uint256 indexed studentId,
@@ -58,12 +39,6 @@ contract ESGICertificate is ERC721, ERC721URIStorage, AccessControl {
         uint256 timestamp
     );
 
-    /**
-     * @notice Emitted when a certificate is revoked
-     * @param tokenId The ID of the revoked certificate
-     * @param timestamp When the certificate was revoked
-     * @param reason Why the certificate was revoked
-     */
     event CertificateRevoked(
         uint256 indexed tokenId,
         uint256 timestamp,
@@ -81,7 +56,6 @@ contract ESGICertificate is ERC721, ERC721URIStorage, AccessControl {
 
     /**
      * @notice Issues a new academic certificate as an NFT
-     * @dev Only addresses with MINTER_ROLE can call this function
      * @param to Address receiving the certificate NFT
      * @param studentName Name of the student
      * @param studentId Unique identifier of the student
@@ -122,7 +96,6 @@ contract ESGICertificate is ERC721, ERC721URIStorage, AccessControl {
 
     /**
      * @notice Revokes a certificate's validity
-     * @dev Only addresses with DEFAULT_ADMIN_ROLE can revoke certificates
      * @param tokenId The ID of the certificate to revoke
      * @param reason The reason for revoking the certificate
      */
@@ -130,7 +103,7 @@ contract ESGICertificate is ERC721, ERC721URIStorage, AccessControl {
         uint256 tokenId,
         string memory reason
     ) public onlyRole(DEFAULT_ADMIN_ROLE) {
-        require(_exists(tokenId), "Certificate does not exist");
+        require(_ownerOf(tokenId) != address(0), "Certificate does not exist");
         require(certificates[tokenId].isValid, "Certificate already revoked");
 
         certificates[tokenId].isValid = false;
@@ -156,34 +129,22 @@ contract ESGICertificate is ERC721, ERC721URIStorage, AccessControl {
     function getCertificateData(
         uint256 tokenId
     ) public view returns (CertificateData memory) {
-        require(_exists(tokenId), "Certificate does not exist");
+        require(_ownerOf(tokenId) != address(0), "Certificate does not exist");
         return certificates[tokenId];
     }
 
     /**
-     * @dev Required override for ERC721URIStorage
-     */
-    function _burn(
-        uint256 tokenId
-    ) internal override(ERC721, ERC721URIStorage) {
-        super._burn(tokenId);
-    }
-
-    /**
-     * @dev Required override for ERC721URIStorage
-     */
-    function tokenURI(
-        uint256 tokenId
-    ) public view override(ERC721, ERC721URIStorage) returns (string memory) {
-        return super.tokenURI(tokenId);
-    }
-
-    /**
-     * @dev Required override for ERC721 and AccessControl
+     * @dev See {IERC165-supportsInterface}.
      */
     function supportsInterface(
         bytes4 interfaceId
-    ) public view override(ERC721, AccessControl) returns (bool) {
+    )
+        public
+        view
+        virtual
+        override(ERC721URIStorage, AccessControl)
+        returns (bool)
+    {
         return super.supportsInterface(interfaceId);
     }
 }
