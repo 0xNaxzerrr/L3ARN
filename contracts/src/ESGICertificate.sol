@@ -4,32 +4,53 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 
-/// @title ESGI Academic Certificate NFT
-/// @notice Ce contrat gère les certificats académiques sous forme de NFTs
+/**
+ * @title ESGICertificate
+ * @author Naxzerrr
+ * @notice This contract manages academic certificates as NFTs for ESGI students
+ * @dev Implements ERC721 with URI storage and role-based access control
+ */
 contract ESGICertificate is ERC721, ERC721URIStorage, AccessControl {
-    using Counters for Counters.Counter;
-
+    /// @notice Role identifier for addresses authorized to mint certificates
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
-    Counters.Counter private _tokenIds;
 
+    /// @notice Counter for token IDs
+    uint256 private _nextTokenId;
+
+    /**
+     * @notice Structure containing all certificate data
+     * @param studentName Full name of the student
+     * @param studentId Unique identifier of the student
+     * @param courseName Name of the course or degree
+     * @param graduationYear Year of graduation
+     * @param grade Academic grade or distinction
+     * @param isValid Current validity status of the certificate
+     * @param timestamp Time when the certificate was issued
+     */
     struct CertificateData {
-        string studentName; // Nom de l'étudiant
-        uint256 studentId; // ID unique de l'étudiant
-        string courseName; // Nom du cours/diplôme
-        uint256 graduationYear; // Année d'obtention
-        string grade; // Note ou mention
-        bool isValid; // Statut de validité
-        uint256 timestamp; // Horodatage de création
+        string studentName;
+        uint256 studentId;
+        string courseName;
+        uint256 graduationYear;
+        string grade;
+        bool isValid;
+        uint256 timestamp;
     }
 
-    // Mapping from token ID to certificate data
+    /// @notice Mapping from token ID to certificate data
     mapping(uint256 => CertificateData) public certificates;
 
-    // Mapping from student ID to array of their certificate IDs
+    /// @notice Mapping from student ID to their certificate token IDs
     mapping(uint256 => uint256[]) public studentCertificates;
 
+    /**
+     * @notice Emitted when a new certificate is issued
+     * @param tokenId The ID of the newly minted certificate
+     * @param studentId The ID of the student receiving the certificate
+     * @param courseName The name of the completed course
+     * @param timestamp When the certificate was issued
+     */
     event CertificateIssued(
         uint256 indexed tokenId,
         uint256 indexed studentId,
@@ -37,17 +58,38 @@ contract ESGICertificate is ERC721, ERC721URIStorage, AccessControl {
         uint256 timestamp
     );
 
+    /**
+     * @notice Emitted when a certificate is revoked
+     * @param tokenId The ID of the revoked certificate
+     * @param timestamp When the certificate was revoked
+     * @param reason Why the certificate was revoked
+     */
     event CertificateRevoked(
         uint256 indexed tokenId,
         uint256 timestamp,
         string reason
     );
 
+    /**
+     * @notice Initializes the contract with basic ERC721 metadata
+     * @dev Sets up the initial roles, granting both admin and minter roles to the deployer
+     */
     constructor() ERC721("ESGI Academic Certificate", "ESGICERT") {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(MINTER_ROLE, msg.sender);
     }
 
+    /**
+     * @notice Issues a new academic certificate as an NFT
+     * @dev Only addresses with MINTER_ROLE can call this function
+     * @param to Address receiving the certificate NFT
+     * @param studentName Name of the student
+     * @param studentId Unique identifier of the student
+     * @param courseName Name of the completed course
+     * @param grade Academic grade achieved
+     * @param uri IPFS URI containing additional certificate metadata
+     * @return uint256 The ID of the newly minted certificate
+     */
     function issueCertificate(
         address to,
         string memory studentName,
@@ -56,10 +98,9 @@ contract ESGICertificate is ERC721, ERC721URIStorage, AccessControl {
         string memory grade,
         string memory uri
     ) public onlyRole(MINTER_ROLE) returns (uint256) {
-        _tokenIds.increment();
-        uint256 newTokenId = _tokenIds.current();
+        uint256 tokenId = _nextTokenId++;
 
-        certificates[newTokenId] = CertificateData({
+        certificates[tokenId] = CertificateData({
             studentName: studentName,
             studentId: studentId,
             courseName: courseName,
@@ -69,21 +110,22 @@ contract ESGICertificate is ERC721, ERC721URIStorage, AccessControl {
             timestamp: block.timestamp
         });
 
-        studentCertificates[studentId].push(newTokenId);
+        studentCertificates[studentId].push(tokenId);
 
-        _mint(to, newTokenId);
-        _setTokenURI(newTokenId, uri);
+        _mint(to, tokenId);
+        _setTokenURI(tokenId, uri);
 
-        emit CertificateIssued(
-            newTokenId,
-            studentId,
-            courseName,
-            block.timestamp
-        );
+        emit CertificateIssued(tokenId, studentId, courseName, block.timestamp);
 
-        return newTokenId;
+        return tokenId;
     }
 
+    /**
+     * @notice Revokes a certificate's validity
+     * @dev Only addresses with DEFAULT_ADMIN_ROLE can revoke certificates
+     * @param tokenId The ID of the certificate to revoke
+     * @param reason The reason for revoking the certificate
+     */
     function revokeCertificate(
         uint256 tokenId,
         string memory reason
@@ -95,12 +137,22 @@ contract ESGICertificate is ERC721, ERC721URIStorage, AccessControl {
         emit CertificateRevoked(tokenId, block.timestamp, reason);
     }
 
+    /**
+     * @notice Retrieves all certificate IDs for a given student
+     * @param studentId The student's unique identifier
+     * @return uint256[] Array of certificate token IDs belonging to the student
+     */
     function getStudentCertificates(
         uint256 studentId
     ) public view returns (uint256[] memory) {
         return studentCertificates[studentId];
     }
 
+    /**
+     * @notice Retrieves the full data of a specific certificate
+     * @param tokenId The ID of the certificate to query
+     * @return CertificateData The complete certificate data structure
+     */
     function getCertificateData(
         uint256 tokenId
     ) public view returns (CertificateData memory) {
@@ -108,19 +160,27 @@ contract ESGICertificate is ERC721, ERC721URIStorage, AccessControl {
         return certificates[tokenId];
     }
 
-    // Override required functions
+    /**
+     * @dev Required override for ERC721URIStorage
+     */
     function _burn(
         uint256 tokenId
     ) internal override(ERC721, ERC721URIStorage) {
         super._burn(tokenId);
     }
 
+    /**
+     * @dev Required override for ERC721URIStorage
+     */
     function tokenURI(
         uint256 tokenId
     ) public view override(ERC721, ERC721URIStorage) returns (string memory) {
         return super.tokenURI(tokenId);
     }
 
+    /**
+     * @dev Required override for ERC721 and AccessControl
+     */
     function supportsInterface(
         bytes4 interfaceId
     ) public view override(ERC721, AccessControl) returns (bool) {
