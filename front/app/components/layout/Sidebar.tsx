@@ -1,53 +1,58 @@
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Home, GraduationCap, CheckCircle, ShieldCheck } from "lucide-react"
+'use client';
 
-const navItems = [
-  { icon: Home, label: "Home", href: "/" },
-  { icon: GraduationCap, label: "My Certificates", href: "/student" },
-  { icon: CheckCircle, label: "Verify", href: "/verify" },
-  { icon: ShieldCheck, label: "Admin", href: "/admin" },
-]
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Home, GraduationCap, Search, Settings, UserCircle } from 'lucide-react';
+
+const navigation = [
+  { name: 'Home', href: '/', icon: Home },
+  { name: 'My Certificates', href: '/student', icon: GraduationCap },
+  { name: 'Verify', href: '/verify', icon: Search },
+  { name: 'Admin', href: '/admin', icon: Settings },
+];
 
 export function Sidebar() {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   return (
-    <div className="flex flex-col w-64 gradient-bg text-white shadow-xl">
-      <div className="flex items-center justify-center h-16 border-b border-white border-opacity-20">
-        <span className="text-2xl font-bold">L3ARN</span>
+    <div className="flex flex-col w-64 bg-[#1a1b23] text-white">
+      {/* Logo */}
+      <div className="h-16 flex items-center px-6 border-b border-gray-700/50">
+        <span className="text-2xl font-bold text-white">L3ARN</span>
       </div>
-      <nav className="flex-1 overflow-y-auto py-4">
-        <ul className="space-y-2 px-3">
-          {navItems.map((item) => (
-            <li key={item.href}>
-              <Link
-                href={item.href}
-                className={`nav-link ${
-                  pathname === item.href ? "nav-link-active" : "text-white text-opacity-80 nav-link-hover"
-                }`}
-              >
-                <item.icon className="w-5 h-5 mr-3" />
-                <span className="font-medium">{item.label}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
+
+      {/* Navigation */}
+      <nav className="flex-1 px-4 py-4 space-y-2">
+        {navigation.map((item) => {
+          const Icon = item.icon;
+          const isActive = pathname === item.href;
+          
+          return (
+            <Link
+              key={item.name}
+              href={item.href}
+              className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
+                isActive
+                  ? 'bg-blue-600/20 text-blue-400'
+                  : 'text-gray-300 hover:bg-white/5 hover:text-white'
+              }`}
+            >
+              <Icon className={`h-5 w-5 mr-3 ${
+                isActive ? 'text-blue-400' : 'text-gray-400'
+              }`} />
+              {item.name}
+            </Link>
+          );
+        })}
       </nav>
-      <div className="p-4 border-t border-white border-opacity-20">
-        <div className="flex items-center bg-white bg-opacity-10 p-3 rounded-lg">
-          <img
-            src="/placeholder.svg"
-            alt="Profile"
-            className="w-10 h-10 rounded-full mr-3 border-2 border-white shadow-sm"
-          />
-          <div>
-            <span className="text-sm font-medium block">John Doe</span>
-            <span className="text-xs text-white text-opacity-80">Student</span>
-          </div>
-        </div>
+
+      {/* Profile Section */}
+      <div className="border-t border-gray-700/50 p-4">
+        <button className="flex items-center px-4 py-3 w-full text-sm font-medium text-gray-300 rounded-lg hover:bg-white/5 hover:text-white transition-colors">
+          <UserCircle className="h-5 w-5 mr-3 text-gray-400" />
+          Profile
+        </button>
       </div>
     </div>
-  )
+  );
 }
-
