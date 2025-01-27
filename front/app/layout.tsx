@@ -1,6 +1,6 @@
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { WagmiConfig } from '../lib/wagmi'
+import { WagmiConfig } from '@/components/providers/wagmi'
 import { Sidebar } from '@/components/layout/Sidebar'
 
 const inter = Inter({ subsets: ['latin'] })
