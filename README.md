@@ -1,166 +1,159 @@
-# L3ARN - Plateforme de Certificats Académiques NFT ESGI
+# L3ARN - Blockchain Academic Certification Platform
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
-![Licence](https://img.shields.io/badge/license-MIT-green.svg)
+## Project Overview
 
-L3ARN est une plateforme décentralisée de gestion des certificats académiques utilisant la technologie blockchain. Développée pour l'ESGI, elle permet l'émission, la vérification et la gestion des diplômes sous forme de NFTs sur une Subnet Avalanche dédiée.
+L3ARN is an innovative blockchain-based platform designed to revolutionize academic certification through decentralized, verifiable, and immutable digital certificates. By leveraging Avalanche subnet technology and smart contracts, L3ARN provides a secure and transparent solution for issuing, managing, and validating academic credentials.
 
-## 🎯 Fonctionnalités Principales
+## Key Features
 
-- **Émission de Certificats** : Création de NFTs représentant les diplômes
-- **Vérification Décentralisée** : Validation transparente des certifications
-- **Gestion des Accès** : Système de rôles (Admin, École, Étudiant)
-- **Interface Intuitive** : Dashboard moderne et responsive
-- **Sécurité Avancée** : Protocoles de sécurité blockchain
+- 🎓 Decentralized Academic Certificates
+- 🔒 Immutable and Verifiable Credentials
+- 🌐 Avalanche Subnet Integration
+- 🚀 NFT-Based Certificate Management
+- 🔐 Role-Based Access Control
 
-## 🏗 Architecture
+## Prerequisites
 
-```mermaid
-graph TD
-    A[Frontend Next.js] -->|Web3| B[Smart Contracts]
-    B -->|Stockage| C[Subnet Avalanche]
-    B -->|Metadata| D[IPFS]
-    E[Core Wallet] -->|Authentification| A
+### Software Requirements
+- [Avalanche CLI](https://docs.avax.network/subnets/install-avalanche-cli)
+- [Foundry](https://book.getfoundry.sh/getting-started/installation)
+- [Rust](https://www.rust-lang.org/tools/install)
+- [Node.js](https://nodejs.org/) (v16+)
+- [Cast](https://book.getfoundry.sh/reference/cast)
+
+### System Requirements
+- 8GB RAM
+- 4 CPU Cores
+- 50GB SSD Storage
+- macOS, Linux, or Windows (WSL2)
+
+## Installation Steps
+
+### 1. Install Avalanche CLI
+```bash
+curl -sSfL https://raw.githubusercontent.com/ava-labs/avalanche-cli/main/scripts/install.sh | sh -s
 ```
 
-## 🚀 Installation Rapide
-
-### Prérequis
-- Node.js ≥ 18.x
-- npm ≥ 9.x
-- Foundry
-- Avalanche CLI
-- Core Wallet
-
-### Configuration Complète
-
-1. **Cloner le repository**
+### 2. Install Foundry
 ```bash
-git clone https://github.com/0xNaxzerrr/L3ARN.git
+curl -L https://foundry.paradigm.xyz | bash
+source ~/.bashrc
+foundryup
+```
+
+### 3. Clone the L3ARN Repository
+```bash
+git clone https://github.com/your-username/L3ARN.git
 cd L3ARN
 ```
 
-2. **Smart Contracts**
+## Blockchain and Subnet Setup
+
+### Create Subnet Configuration
 ```bash
-cd contracts
-forge install
+# Create a new subnet
+avalanche subnet create l3arn-subnet
+
+# Follow the interactive prompts:
+# - Choose SubnetEVM
+# - Configure custom chain parameters
+# - Set native token details
+```
+
+### Deploy Subnet Locally
+```bash
+# Deploy the subnet to local network
+avalanche subnet deploy l3arn-subnet
+
+# Select "Local" deployment option
+# Note the RPC URL and blockchain details
+```
+
+## Smart Contract Development
+
+### Install Dependencies
+```bash
+# Initialize Foundry project
+forge init
+
+# Install OpenZeppelin contracts
+forge install OpenZeppelin/openzeppelin-contracts
+```
+
+### Compile Smart Contract
+```bash
 forge build
 ```
 
-3. **Frontend**
+### Deploy Smart Contract
 ```bash
-cd ../front
-npm install
-npm run dev
+# Set your private key
+export PRIVATE_KEY=your_private_key_here
+
+# Deploy to local subnet
+forge script script/DeployESGICertificate.s.sol:DeployESGICertificate \
+  --rpc-url [LOCAL_SUBNET_RPC_URL] \
+  --broadcast
 ```
 
-4. **Subnet Avalanche**
+## Interacting with the Contract
+
+### Issue a Certificate
 ```bash
-avalanche subnet deploy ESGI --local
+cast send [CONTRACT_ADDRESS] "issueCertificate(address,string,uint256,string,string,string)" \
+  [RECIPIENT_ADDRESS] \
+  "John Doe" \
+  123456 \
+  "Blockchain Development" \
+  "A+" \
+  "ipfs://metadata_uri" \
+  --rpc-url [LOCAL_SUBNET_RPC_URL] \
+  --private-key [YOUR_PRIVATE_KEY]
 ```
 
-## 🌐 Configuration du Réseau
-
-### Subnet ESGI Local
-- **Network Name**: ESGI
-- **RPC URL**: http://127.0.0.1:40679/ext/bc/2jD94QhBWwFPfjgKkDjqZdXMAmPvnzC75UVAUxU4iGmsT8MSmT/rpc
-- **Chain ID**: 99999
-- **Symbol**: AVAX
-
-### Comptes de Test
-| Rôle | Adresse | Balance |
-|------|----------|---------|
-| Admin | 0x8db97C7cEcE249c2b98bDC0226Cc4C2A57BF52FC | 1,000,000 AVAX |
-| Manager | 0x5c652596dbe51ed3d5DDA47f2790236FB6c77537 | 10 AVAX |
-| Test | 0x2875618c9bAeE0C1e487f411327396619D7DF0A5 | 600 AVAX |
-
-## 📁 Structure du Projet
-
-```
-L3ARN/
-├── contracts/               # Smart contracts Solidity
-│   ├── src/                # Code source des contrats
-│   ├── test/               # Tests
-│   └── script/             # Scripts de déploiement
-│
-└── front/                  # Application frontend
-    ├── app/                # Pages et routes
-    ├── components/         # Composants React
-    └── lib/               # Utilitaires
-```
-
-## 🔧 Développement
-
-### Smart Contracts
+### Retrieve Certificate Details
 ```bash
-cd contracts
-forge test        # Lancer les tests
-forge script script/Deploy.s.sol --rpc-url [URL] --broadcast  # Déployer
+# Get certificate data
+cast call [CONTRACT_ADDRESS] "getCertificateData(uint256)(tuple)" 0
+
+# Get student certificates
+cast call [CONTRACT_ADDRESS] "getStudentCertificates(uint256)(uint256[])" 123456
 ```
 
-### Frontend
+## Subnet Management
+
+### Stop Subnet
 ```bash
-cd front
-npm run dev      # Mode développement
-npm run build    # Build production
+avalanche subnet stop l3arn-subnet
 ```
 
-## 📱 Interface Utilisateur
+### Start Subnet
+```bash
+avalanche subnet start l3arn-subnet
+```
 
-### Rôles et Fonctionnalités
+## Security Considerations
 
-#### Admin
-- Gestion des certificats
-- Attribution des rôles
-- Surveillance du système
+- Never commit private keys to version control
+- Use environment variables for sensitive data
+- Implement proper access controls
+- Regularly audit smart contract code
 
-#### École
-- Émission de certificats
-- Gestion des étudiants
-- Suivi des diplômes
+## Roadmap
 
-#### Étudiant
-- Visualisation des certificats
-- Partage sécurisé
-- Historique académique
+- [ ] IPFS Integration
+- [ ] Multi-Signature Certificate Issuance
+- [ ] Cross-Subnet Verification
+- [ ] Web Interface Development
 
-## 🔐 Sécurité
+## Contributing
 
-- Smart contracts audités
-- Gestion des rôles avec OpenZeppelin
-- Protocoles de sécurité blockchain
-- Validation multi-signatures
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
 
-## 📊 Monitoring
+## License
 
-### Logs et Debugging
-- Logs des nœuds: `~/.avalanche-cli/local/ESGI-local-node-local-network/node1/logs`
-- Backend controller: `~/.avalanche-cli/local/ESGI-local-node-local-network/server.log`
-
-### Nodes Information
-- **Node1**: NodeID-7Xhw2mDxuDS44j42TCB6U5579esbSt3Lg
-- **Node2**: NodeID-MFrZFVCXPv5iCn6M9K6XduxGTYp891xXZ
-
-## 🤝 Contribution
-
-1. Fork le projet
-2. Créer une branche feature (`git checkout -b feature/AmazingFeature`)
-3. Commit les changements (`git commit -m 'Add some AmazingFeature'`)
-4. Push sur la branche (`git push origin feature/AmazingFeature`)
-5. Ouvrir une Pull Request
-
-## 📄 Licence
-
-Distribué sous la licence MIT. Voir `LICENSE` pour plus d'informations.
-
-## 📞 Support
-
-- Créer une issue GitHub
-- Documentation : [docs/](./docs)
-- Email : contact@example.com
-
-## 🙏 Remerciements
-
-- ESGI pour le support
-- Avalanche pour l'infrastructure blockchain
-- OpenZeppelin pour les smart contracts
+This project is licensed under the MIT License.
