@@ -9,14 +9,15 @@ contract DeployESGICertificate is Script {
         // Retrieve private key from environment
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
 
-        // Start broadcasting
+        // Configure before broadcasting
         vm.startBroadcast(deployerPrivateKey);
 
+        // Paramètres gas plus bas
+        uint256 gasPrice = 1;
+        uint256 gasLimit = 3000000;
+        
         // Deploy the contract
-        ESGICertificate certificate = new ESGICertificate();
-
-        // Optional: Setup additional roles or configurations
-        // certificate.grantRole(certificate.MINTER_ROLE(), OTHER_ADDRESS);
+        ESGICertificate certificate = new ESGICertificate{gas: gasLimit}();
 
         vm.stopBroadcast();
 

@@ -1,200 +1,159 @@
-# Smart Contracts L3ARN
+# L3ARN - Blockchain Academic Certification Platform
 
-Smart contracts pour la gestion des certificats académiques NFT de l'ESGI sur la blockchain Avalanche.
+## Project Overview
 
-## Architecture
+L3ARN is an innovative blockchain-based platform designed to revolutionize academic certification through decentralized, verifiable, and immutable digital certificates. By leveraging Avalanche subnet technology and smart contracts, L3ARN provides a secure and transparent solution for issuing, managing, and validating academic credentials.
 
-```mermaid
-graph TD
-    A[ESGICertificate] -->|Mint/Revoke| B[NFT Certificate]
-    A -->|Access Control| C[Roles]
-    C -->|Admin| D[Full Control]
-    C -->|Minter| E[Issue Certificates]
-    B -->|Metadata| F[IPFS Storage]
-```
+## Key Features
 
-## Structure des Contrats
+- 🎓 Decentralized Academic Certificates
+- 🔒 Immutable and Verifiable Credentials
+- 🌐 Avalanche Subnet Integration
+- 🚀 NFT-Based Certificate Management
+- 🔐 Role-Based Access Control
 
-```
-contracts/
-├── src/
-│   ├── ESGICertificate.sol     # Contrat principal de gestion des certificats
-│   └── interfaces/             # Interfaces des contrats
-├── test/                       # Tests des smart contracts
-├── script/                     # Scripts de déploiement
-└── lib/                        # Dépendances Foundry
-```
+## Prerequisites
 
-## Technologies & Frameworks
-
-- **Solidity** ^0.8.20
-- **OpenZeppelin** - Contrats standards (ERC721, AccessControl)
-- **Foundry** - Framework de développement et test
-- **Avalanche Subnet** - Blockchain dédiée ESGI
-
-## Prérequis
-
+### Software Requirements
+- [Avalanche CLI](https://docs.avax.network/subnets/install-avalanche-cli)
 - [Foundry](https://book.getfoundry.sh/getting-started/installation)
-- [Avalanche CLI](https://docs.avax.network/tooling/cli-guides/install-avalanche-cli)
+- [Rust](https://www.rust-lang.org/tools/install)
+- [Node.js](https://nodejs.org/) (v16+)
+- [Cast](https://book.getfoundry.sh/reference/cast)
 
-## Installation
+### System Requirements
+- 8GB RAM
+- 4 CPU Cores
+- 50GB SSD Storage
+- macOS, Linux, or Windows (WSL2)
 
-1. Cloner le repository :
+## Installation Steps
+
+### 1. Install Avalanche CLI
 ```bash
-git clone https://github.com/0xNaxzerrr/L3ARN.git
-cd L3ARN/contracts
+curl -sSfL https://raw.githubusercontent.com/ava-labs/avalanche-cli/main/scripts/install.sh | sh -s
 ```
 
-2. Installer les dépendances :
+### 2. Install Foundry
 ```bash
-forge install
+curl -L https://foundry.paradigm.xyz | bash
+source ~/.bashrc
+foundryup
 ```
 
-## Compilation
+### 3. Clone the L3ARN Repository
+```bash
+git clone https://github.com/your-username/L3ARN.git
+cd L3ARN
+```
 
+## Blockchain and Subnet Setup
+
+### Create Subnet Configuration
+```bash
+# Create a new subnet
+avalanche subnet create l3arn-subnet
+
+# Follow the interactive prompts:
+# - Choose SubnetEVM
+# - Configure custom chain parameters
+# - Set native token details
+```
+
+### Deploy Subnet Locally
+```bash
+# Deploy the subnet to local network
+avalanche subnet deploy l3arn-subnet
+
+# Select "Local" deployment option
+# Note the RPC URL and blockchain details
+```
+
+## Smart Contract Development
+
+### Install Dependencies
+```bash
+# Initialize Foundry project
+forge init
+
+# Install OpenZeppelin contracts
+forge install OpenZeppelin/openzeppelin-contracts
+```
+
+### Compile Smart Contract
 ```bash
 forge build
 ```
 
-## Tests
-
+### Deploy Smart Contract
 ```bash
-# Lancer tous les tests
-forge test
+# Set your private key
+export PRIVATE_KEY=your_private_key_here
 
-# Lancer les tests avec traces
-forge test -vvv
-
-# Test d'une fonction spécifique
-forge test --match-test testIssueCertificate
+# Deploy to local subnet
+forge script script/DeployESGICertificate.s.sol:DeployESGICertificate \
+  --rpc-url [LOCAL_SUBNET_RPC_URL] \
+  --broadcast
 ```
 
-## Déploiement
+## Interacting with the Contract
 
-### Sur le Subnet Local
-
-1. Démarrer le subnet :
+### Issue a Certificate
 ```bash
-avalanche subnet deploy ESGI --local
+cast send [CONTRACT_ADDRESS] "issueCertificate(address,string,uint256,string,string,string)" \
+  [RECIPIENT_ADDRESS] \
+  "John Doe" \
+  123456 \
+  "Blockchain Development" \
+  "A+" \
+  "ipfs://metadata_uri" \
+  --rpc-url [LOCAL_SUBNET_RPC_URL] \
+  --private-key [YOUR_PRIVATE_KEY]
 ```
 
-2. Déployer les contrats :
+### Retrieve Certificate Details
 ```bash
-forge script script/Deploy.s.sol --rpc-url http://127.0.0.1:40679/ext/bc/2jD94QhBWwFPfjgKkDjqZdXMAmPvnzC75UVAUxU4iGmsT8MSmT/rpc --broadcast
+# Get certificate data
+cast call [CONTRACT_ADDRESS] "getCertificateData(uint256)(tuple)" 0
+
+# Get student certificates
+cast call [CONTRACT_ADDRESS] "getStudentCertificates(uint256)(uint256[])" 123456
 ```
 
-### Sur le Testnet/Mainnet
+## Subnet Management
 
-1. Configurer les variables d'environnement :
+### Stop Subnet
 ```bash
-cp .env.example .env
-# Éditer .env avec vos clés privées
+avalanche subnet stop l3arn-subnet
 ```
 
-2. Déployer :
+### Start Subnet
 ```bash
-forge script script/Deploy.s.sol --rpc-url $RPC_URL --broadcast --verify
+avalanche subnet start l3arn-subnet
 ```
 
-## Structure des Certificats
+## Security Considerations
 
-```solidity
-struct CertificateData {
-    string studentName;
-    uint256 studentId;
-    string courseName;
-    uint256 graduationYear;
-    string grade;
-    bool isValid;
-    uint256 timestamp;
-}
-```
+- Never commit private keys to version control
+- Use environment variables for sensitive data
+- Implement proper access controls
+- Regularly audit smart contract code
 
-## Rôles et Permissions
+## Roadmap
 
-- **DEFAULT_ADMIN_ROLE** : Contrôle total
-  - Révoquer des certificats
-  - Gérer les rôles
-  
-- **MINTER_ROLE** : Émission des certificats
-  - Créer de nouveaux certificats
-  - Mettre à jour les métadonnées
+- [ ] IPFS Integration
+- [ ] Multi-Signature Certificate Issuance
+- [ ] Cross-Subnet Verification
+- [ ] Web Interface Development
 
-## Fonctions Principales
+## Contributing
 
-### Émission de Certificat
-```solidity
-function issueCertificate(
-    address to,
-    string memory studentName,
-    uint256 studentId,
-    string memory courseName,
-    string memory grade,
-    string memory uri
-) public onlyRole(MINTER_ROLE) returns (uint256)
-```
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
 
-### Révocation de Certificat
-```solidity
-function revokeCertificate(
-    uint256 tokenId,
-    string memory reason
-) public onlyRole(DEFAULT_ADMIN_ROLE)
-```
+## License
 
-## Sécurité
-
-- Tests de couverture complète
-- Utilisation de contrats OpenZeppelin audités
-- Système de rôles avec Access Control
-- Protection contre les réentrances
-
-## Gas Optimisation
-
-- Stockage optimisé des données
-- Utilisation de mappings
-- Events pour les données non critiques
-
-## Events
-
-```solidity
-event CertificateIssued(
-    uint256 indexed tokenId,
-    uint256 indexed studentId,
-    string courseName,
-    uint256 timestamp
-);
-
-event CertificateRevoked(
-    uint256 indexed tokenId,
-    uint256 timestamp,
-    string reason
-);
-```
-
-## Maintenance
-
-Pour mettre à jour les dépendances :
-```bash
-forge update
-```
-
-## Audit et Sécurité
-
-Points vérifiés :
-- Contrôle d'accès
-- Gestion des erreurs
-- Protection contre les attaques courantes
-- Optimisation du gas
-
-## Contribution
-
-1. Fork le projet
-2. Créer une branche feature
-3. Commiter les changements
-4. Push sur la branche
-5. Ouvrir une Pull Request
-
-## Licence
-
-MIT
+This project is licensed under the MIT License.
