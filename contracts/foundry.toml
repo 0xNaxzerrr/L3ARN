@@ -8,7 +8,8 @@ remappings = [
     "forge-std/=lib/forge-std/src/",
 ]
 
-[rpc_endpoints]
-local = "${RPC_URL}"
+[profile.avalanche]
+eth_rpc_url = "${RPC_URL}"
+chain_id = "${CHAIN_ID}"
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
