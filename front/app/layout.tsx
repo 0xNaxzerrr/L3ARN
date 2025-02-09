@@ -6,8 +6,8 @@ import { TopBar } from "@/components/TopBar"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
-  title: "Blockchain Certificates",
-  description: "Manage and verify academic certificates on the blockchain",
+  title: "L3ARN",
+  description: "Manage and verify academic certificates on AVAX blockchain",
 }
 
 export default function RootLayout({

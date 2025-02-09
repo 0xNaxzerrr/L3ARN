@@ -1,0 +1,86 @@
+forge script script/Deploy.s.sol:DeployESGICertificates \
+    --rpc-url $RPC_URL \
+    --private-key $PRIVATE_KEY \
+    --broadcast \
+    -vvvv
+[⠊] Compiling...
+[⠘] Compiling 38 files with Solc 0.8.28
+[⠃] Solc 0.8.28 finished in 801.79ms
+Compiler run successful with warnings:
+Warning (2072): Unused local variable.
+  --> script/Deploy.s.sol:12:9:
+   |
+12 |         ESGIProgramNFT programNFT = new ESGIProgramNFT();
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Warning (2072): Unused local variable.
+  --> script/Deploy.s.sol:13:9:
+   |
+13 |         ESGIAnnualPerformanceNFT performanceNFT = new ESGIAnnualPerformanceNFT();
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Traces:
+  [2755135] DeployESGICertificates::run()
+    ├─ [0] VM::startBroadcast()
+    │   └─ ← [Return] 
+    ├─ [1381454] → new ESGIProgramNFT@0xc3d9a5b0ccCf41595357578829ffd8b043b04870
+    │   ├─ emit OwnershipTransferred(previousOwner: 0x0000000000000000000000000000000000000000, newOwner: 0x3095Bfe8173C3290525688aF4Cd15D9EA127f311)
+    │   └─ ← [Return] 6556 bytes of code
+    ├─ [1303172] → new ESGIAnnualPerformanceNFT@0xbA334A26f2d8302B56963f385Cf96d823E0AC70D
+    │   ├─ emit OwnershipTransferred(previousOwner: 0x0000000000000000000000000000000000000000, newOwner: 0x3095Bfe8173C3290525688aF4Cd15D9EA127f311)
+    │   └─ ← [Return] 6165 bytes of code
+    ├─ [0] VM::stopBroadcast()
+    │   └─ ← [Return] 
+    └─ ← [Stop] 
+
+
+Script ran successfully.
+
+## Setting up 1 EVM.
+==========================
+Simulated On-chain Traces:
+
+  [1381454] → new ESGIProgramNFT@0xc3d9a5b0ccCf41595357578829ffd8b043b04870
+    ├─ emit OwnershipTransferred(previousOwner: 0x0000000000000000000000000000000000000000, newOwner: 0x3095Bfe8173C3290525688aF4Cd15D9EA127f311)
+    └─ ← [Return] 6556 bytes of code
+
+  [1303172] → new ESGIAnnualPerformanceNFT@0xbA334A26f2d8302B56963f385Cf96d823E0AC70D
+    ├─ emit OwnershipTransferred(previousOwner: 0x0000000000000000000000000000000000000000, newOwner: 0x3095Bfe8173C3290525688aF4Cd15D9EA127f311)
+    └─ ← [Return] 6165 bytes of code
+
+
+==========================
+
+Chain 43112
+
+Estimated gas price: 50.000000001 gwei
+
+Estimated total gas used for script: 3918228
+
+Estimated amount required: 0.195911400003918228 ETH
+
+==========================
+
+##### 43112
+✅  [Success] Hash: 0x600787b9db22585b1c3b2fe3e5daa02f745814f18be53fa03bcb02fd43ec188e
+Contract Address: 0xbA334A26f2d8302B56963f385Cf96d823E0AC70D
+Block: 1
+Paid: 0.036619550001464782 ETH (1464782 gas * 25.000000001 gwei)
+
+
+##### 43112
+✅  [Success] Hash: 0x857709c9302b30c4c5d8849c80706533a3ed1cdb6dfff1fdd87f0e4c812aacbf
+Contract Address: 0xc3d9a5b0ccCf41595357578829ffd8b043b04870
+Block: 1
+Paid: 0.03873100000154924 ETH (1549240 gas * 25.000000001 gwei)
+
+✅ Sequence #1 on 43112 | Total Paid: 0.075350550003014022 ETH (3014022 gas * avg 25.000000001 gwei)
+                                                                                                                                
+
+==========================
+
+ONCHAIN EXECUTION COMPLETE & SUCCESSFUL.
+
+Transactions saved to: /Users/naxzerrr/Naxzerrr/ESGI/avax/L3ARN/contracts/broadcast/Deploy.s.sol/43112/run-latest.json
+
+Sensitive values saved to: /Users/naxzerrr/Naxzerrr/ESGI/avax/L3ARN/contracts/cache/Deploy.s.sol/43112/run-latest.json
