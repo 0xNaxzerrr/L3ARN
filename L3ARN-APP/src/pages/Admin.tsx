@@ -25,20 +25,22 @@ const Admin = () => {
     }
   });
 
-  const handleMint = async (data) => {
+  const handleMint = async (data: any) => {
     // TODO: Implement minting logic using smart contract
     console.log('Minting certificate:', data);
   };
 
-  const handleModify = async (data) => {
+  const handleModify = async (data: any) => {
     // TODO: Implement modification logic using smart contract
     console.log('Modifying certificate:', data);
   };
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold mb-8">Admin Dashboard</h1>
-
+    <div className="text-center mb-12">
+      <h1 className="text-4xl font-bold mb-4">Admin Dashboard</h1>
+      <p className="text-xl text-gray-600">Here you can mint NFTs and update them</p>
+    </div>
       <div className="grid md:grid-cols-2 gap-8">
         <Card>
           <CardHeader>
