@@ -2,26 +2,16 @@
 pragma solidity ^0.8.20;
 
 import "forge-std/Script.sol";
-import "../src/ESGICertificate.sol";
+import "../src/ESGIProgramNFT.sol";
+import "../src/ESGIAnnualPerformanceNFT.sol";
 
-contract DeployESGICertificate is Script {
+contract DeployESGICertificates is Script {
     function run() external {
-        // Retrieve private key from environment
-        uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
+        vm.startBroadcast();
 
-        // Configure before broadcasting
-        vm.startBroadcast(deployerPrivateKey);
-
-        // Paramètres gas plus bas
-        uint256 gasPrice = 1;
-        uint256 gasLimit = 3000000;
-        
-        // Deploy the contract
-        ESGICertificate certificate = new ESGICertificate{gas: gasLimit}();
+        ESGIProgramNFT programNFT = new ESGIProgramNFT();
+        ESGIAnnualPerformanceNFT performanceNFT = new ESGIAnnualPerformanceNFT();
 
         vm.stopBroadcast();
-
-        // Log the deployment
-        console.log("ESGICertificate deployed at:", address(certificate));
     }
 }
