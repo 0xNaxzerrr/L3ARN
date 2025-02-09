@@ -13,7 +13,7 @@ const Navbar = () => {
   const navigationItems = [
     { label: 'Home', href: '/' },
     { label: 'My Certificates', href: '/MyCertificates' },
-    { label: 'Verify', href: '/verify' },
+    { label: 'Verify', href: '/Verify' },
     { label: 'Admin', href: '/Admin' },
   ];
 
