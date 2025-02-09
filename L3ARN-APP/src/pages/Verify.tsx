@@ -13,9 +13,11 @@ const Verify = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold mb-8">Verify Certificate</h1>
-
+      <div className="container mx-auto px-4 py-8">
+    <div className="text-center mb-12">
+      <h1 className="text-4xl font-bold mb-4">Verify</h1>
+      <p className="text-xl text-gray-600">Enter the certicate ID to retrieve the associated's NFT</p>
+    </div>
       <Card className="max-w-md mx-auto mb-8">
         <CardHeader>
           <CardTitle>Enter Certificate ID</CardTitle>

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
 const MyCertificates = () => {
@@ -12,16 +11,29 @@ const MyCertificates = () => {
       student: 'John Doe',
       date: '2024-02-09',
       grade: 'A+'
+    },{
+      id: '1',
+      title: 'Blockchain Development',
+      student: 'John Doe',
+      date: '2024-02-09',
+      grade: 'A+'
+    },{
+      id: '1',
+      title: 'Blockchain Development',
+      student: 'John Doe',
+      date: '2024-02-09',
+      grade: 'A+'
     },
     // Add more mock data as needed
   ];
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold">My Certificates</h1>
-        <Button>Connect Wallet</Button>
-      </div>
+
+    <div className="text-center mb-12">
+      <h1 className="text-4xl font-bold mb-4">My certificates</h1>
+      <p className="text-xl text-gray-600">Connect your wallet and see your NFT's Certificates</p>
+    </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {mockCertificates.map((cert) => (

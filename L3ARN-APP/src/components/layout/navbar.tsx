@@ -5,16 +5,16 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 const Navbar = () => {
   const pathname = usePathname();
 
   const navigationItems = [
     { label: 'Home', href: '/' },
-    { label: 'About', href: '/about' },
-    { label: 'My Certificates', href: '/certificates' },
+    { label: 'My Certificates', href: '/MyCertificates' },
     { label: 'Verify', href: '/verify' },
-    { label: 'Admin', href: '/admin' },
+    { label: 'Admin', href: '/Admin' },
   ];
 
   return (
@@ -45,13 +45,7 @@ const Navbar = () => {
           </div>
 
           {/* Connect Wallet Button */}
-          <Button
-            variant="outline"
-            className="hidden md:block"
-            onClick={() => console.log('Connect wallet clicked')}
-          >
-            Connect Wallet
-          </Button>
+        <ConnectButton/>
 
           {/* Mobile Menu Button */}
           <button className="md:hidden p-2">

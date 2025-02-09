@@ -1,6 +1,5 @@
 import { Chain } from "@rainbow-me/rainbowkit";
 import { createConfig, http } from 'wagmi'
-import { mainnet, avalanche } from 'wagmi/chains'
 
 
 export const ESGI = {
