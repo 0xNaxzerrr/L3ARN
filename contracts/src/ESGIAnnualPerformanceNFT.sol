@@ -44,24 +44,20 @@ contract ESGIAnnualPerformanceNFT is ERC721URIStorage, Ownable {
         uint256 tokenId,
         string memory newAcademicStatus
     ) public onlyOwner {
-        // Méthode explicite pour vérifier l'existence
-        require(
-            tokenId < _nextTokenId &&
-                bytes(performanceDetails[tokenId].academicStatus).length > 0,
-            "Token does not exist"
-        );
+        // Vérifier l'existence du token
+        require(tokenId < _nextTokenId, "Token does not exist");
+
+        // Permettre la mise à jour avec une chaîne vide
         performanceDetails[tokenId].academicStatus = newAcademicStatus;
     }
 
     function getAnnualPerformanceDetails(
         uint256 tokenId
     ) public view returns (AnnualPerformance memory) {
-        // Méthode explicite pour vérifier l'existence
-        require(
-            tokenId < _nextTokenId &&
-                bytes(performanceDetails[tokenId].academicStatus).length > 0,
-            "Token does not exist"
-        );
+        // Vérifier l'existence du token
+        require(tokenId < _nextTokenId, "Token does not exist");
+
+        // Retourner les détails du token
         return performanceDetails[tokenId];
     }
 

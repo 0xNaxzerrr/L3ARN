@@ -46,31 +46,25 @@ contract ESGIProgramNFT is ERC721URIStorage, Ownable {
         uint256 tokenId,
         string memory newStatus
     ) public onlyOwner {
-        // Méthode explicite pour vérifier l'existence
-        require(
-            tokenId < _nextTokenId &&
-                bytes(programDetails[tokenId].programName).length > 0,
-            "Token does not exist"
-        );
+        // Vérifier l'existence du token
+        require(tokenId < _nextTokenId, "Token does not exist");
+
+        // Permettre la mise à jour avec une chaîne vide
         programDetails[tokenId].status = newStatus;
     }
 
     function getProgramDetails(
         uint256 tokenId
     ) public view returns (ProgramDetails memory) {
-        // Méthode explicite pour vérifier l'existence
-        require(
-            tokenId < _nextTokenId &&
-                bytes(programDetails[tokenId].programName).length > 0,
-            "Token does not exist"
-        );
+        // Vérifier l'existence du token
+        require(tokenId < _nextTokenId, "Token does not exist");
+
+        // Retourner les détails du token
         return programDetails[tokenId];
     }
 
-    // Méthode pour vérifier l'existence d'un token
     function doesTokenExist(uint256 tokenId) public view returns (bool) {
-        return
-            tokenId < _nextTokenId &&
-            bytes(programDetails[tokenId].programName).length > 0;
+        // Vérifier simplement si le token ID est valide
+        return tokenId < _nextTokenId;
     }
 }
