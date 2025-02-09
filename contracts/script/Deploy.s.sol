@@ -7,11 +7,21 @@ import "../src/ESGIAnnualPerformanceNFT.sol";
 
 contract DeployESGICertificates is Script {
     function run() external {
-        vm.startBroadcast();
+        // Récupérer la clé privée depuis l'environnement
+        uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
 
+        // Démarrer le broadcast avec la clé privée
+        vm.startBroadcast(deployerPrivateKey);
+
+        // Déployer les contrats
         ESGIProgramNFT programNFT = new ESGIProgramNFT();
         ESGIAnnualPerformanceNFT performanceNFT = new ESGIAnnualPerformanceNFT();
 
+        // Arrêter le broadcast
         vm.stopBroadcast();
+
+        // Optionnel : Afficher les adresses des contrats déployés
+        console.log("Program NFT deployed at:", address(programNFT));
+        console.log("Performance NFT deployed at:", address(performanceNFT));
     }
 }
