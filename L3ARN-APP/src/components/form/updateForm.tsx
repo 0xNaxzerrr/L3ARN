@@ -15,6 +15,7 @@ const UpdateFormComponent: React.FC<UpdateFormProps> = ({
   updateForm,
   handleFormChange,
   handleSubmit,
+  isPending,
 }) => {
   return (
     <form onSubmit={(e) => handleSubmit("update", e)} className="space-y-4">
@@ -49,7 +50,7 @@ const UpdateFormComponent: React.FC<UpdateFormProps> = ({
         </Select>
       </div>
       <Button type="submit" className="w-full">
-        Mettre à jour le NFT
+        {isPending ? "Updating ..." : "Mettre à jour le NFT"}
       </Button>
     </form>
   );
