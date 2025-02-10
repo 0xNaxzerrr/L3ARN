@@ -7,6 +7,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WagmiProvider } from 'wagmi';
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { ESGI, config } from '../wagmi';
+import { Toaster } from "@/components/ui/toaster"
+
 const client = new QueryClient();
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -16,6 +18,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <RainbowKitProvider initialChain={ESGI}>
       <Layout>
         <Component {...pageProps} />
+        <Toaster />
         </Layout> 
       </RainbowKitProvider>
     </QueryClientProvider>
