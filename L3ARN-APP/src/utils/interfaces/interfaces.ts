@@ -40,3 +40,67 @@ export interface UpdateFormProps {
   ) => void;
   isPending: boolean;
 }
+
+export interface Course {
+  courseName: string;
+  grade: string;
+  result: string;
+  comments: string;
+}
+
+export interface ProgramCertificate {
+  id: string;
+  programName: string;
+  startYear: string;
+  endYear: string;
+  status: string;
+  academicProgresses: Array<{
+    studentId: string;
+    year: string;
+    nftId: string;
+  }>;
+}
+
+export interface PerformanceCertificate {
+  id: string;
+  year: string;
+  studentId: string;
+  studentName: string;
+  courses: Course[];
+  yearStartDate: string;
+  yearEndDate: string;
+  academicStatus: {
+    status: string;
+    comments: string;
+  };
+}
+
+export interface AcademicStatus {
+  status: string;
+  comments: string;
+}
+export interface AcademicProgress {
+  studentId: string;
+  year: string;
+  nftId: string;
+}
+export interface ProgramDetails {
+  programName: string;
+  startYear: number;
+  endYear: number;
+  programStatus: {
+    status: number;
+    comments: string;
+  };
+  academicProgresses: AcademicProgress[];
+}
+
+export interface PerformanceDetails {
+  year: string;
+  studentId: string;
+  studentName: string;
+  courses: Course[];
+  yearStartDate: number;
+  yearEndDate: number;
+  academicStatus: AcademicStatus;
+}
