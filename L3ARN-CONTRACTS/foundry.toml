@@ -7,6 +7,9 @@ remappings = [
     "ds-test/=lib/forge-std/lib/ds-test/src/",
     "forge-std/=lib/forge-std/src/",
 ]
+viaIr = true
+optimizer = true
+optimizer_runs = 200
 
 [profile.avalanche]
 eth_rpc_url = "${RPC_URL}"
