@@ -2,12 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MintForm, UploadResult } from "@/utils/interfaces/interfaces";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  MintForm,
+  UploadResult,
+  UpdateForm,
+} from "@/utils/interfaces/interfaces";
 import { uploadFile as uploadFileService } from "@/services/ipfs/uploadService";
 import MintingForm from "@/components/form/mintForm";
 import UpdateFormComponent from "@/components/form/updateForm";
 import { useMintESGIProgramNFT } from "@/hooks/useMintESGIProgramNFT";
+import { useUpdateESGIProgramNFT } from "@/hooks/useUpdateESGIProgramNFT";
 import { toast } from "@/hooks/use-toast";
 
 export default function NFTManagementComponent() {
@@ -18,7 +23,7 @@ export default function NFTManagementComponent() {
     endYear: 0,
     file: null,
   });
-  const [updateForm, setUpdateForm] = useState({
+  const [updateForm, setUpdateForm] = useState<UpdateForm>({
     tokenId: "",
     newStatus: "",
   });
@@ -27,31 +32,54 @@ export default function NFTManagementComponent() {
   const [error, setError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isReadyToMint, setIsReadyToMint] = useState(false);
+
   const {
     mintESGIProgramNFT,
-    isError,
-    isPending,
-    isSuccess,
-    transactionHash,
-    receipt,
-    isMinting,
+    isError: isMintError,
+    isPending: isMintPending,
+    isSuccess: isMintSuccess,
+    transactionHash: mintTransactionHash,
   } = useMintESGIProgramNFT();
 
+  const {
+    updateESGIProgramNFT,
+    isError: isUpdateError,
+    isPending: isUpdatePending,
+    isSuccess: isUpdateSuccess,
+    transactionHash: updateTransactionHash,
+  } = useUpdateESGIProgramNFT();
+
   useEffect(() => {
-    if (isSuccess) {
+    if (isMintSuccess) {
       toast({
         title: "Succès",
-        description: `Le NFT a été créé avec succès. Hash de transaction: ${transactionHash}`,
+        description: `Le NFT a été créé avec succès. Hash de transaction: ${mintTransactionHash}`,
         duration: 5000,
       });
-    } else if (isError) {
+    } else if (isMintError) {
       toast({
         title: "Erreur",
         description: "Une erreur s'est produite lors de la création du NFT.",
         duration: 5000,
       });
     }
-  }, [isSuccess, isError, transactionHash]);
+  }, [isMintSuccess, isMintError, mintTransactionHash]);
+
+  useEffect(() => {
+    if (isUpdateSuccess) {
+      toast({
+        title: "Succès",
+        description: `Le NFT a été mis à jour avec succès. Hash de transaction: ${updateTransactionHash}`,
+        duration: 5000,
+      });
+    } else if (isUpdateError) {
+      toast({
+        title: "Erreur",
+        description: "Une erreur s'est produite lors de la mise à jour du NFT.",
+        duration: 5000,
+      });
+    }
+  }, [isUpdateSuccess, isUpdateError, updateTransactionHash]);
 
   const handleFormChange = (
     formName: "mint" | "update",
@@ -74,7 +102,7 @@ export default function NFTManagementComponent() {
     } else {
       setUpdateForm((prev) => ({
         ...prev,
-        [name]: value,
+        [name]: name === "tokenId" ? Number(value) : value,
       }));
     }
   };
@@ -119,8 +147,15 @@ export default function NFTManagementComponent() {
         setError((error as any).message);
       }
     } else if (formName === "update") {
-      console.log("Updating NFT with data:", updateForm);
-      // Ajoutez ici la logique pour mettre à jour le NFT
+      try {
+        console.log("Updating NFT with data:", updateForm);
+        await updateESGIProgramNFT(
+          Number(updateForm.tokenId),
+          updateForm.newStatus
+        );
+      } catch (error) {
+        setError((error as any).message);
+      }
     }
   };
 
@@ -142,7 +177,7 @@ export default function NFTManagementComponent() {
                   handleSubmit={handleSubmit}
                   isUploading={isUploading}
                   isReadyToMint={isReadyToMint}
-                  isPending={isPending}
+                  isPending={isMintPending}
                 />
               </TabsContent>
               <TabsContent value="update">
@@ -150,6 +185,7 @@ export default function NFTManagementComponent() {
                   updateForm={updateForm}
                   handleFormChange={handleFormChange}
                   handleSubmit={handleSubmit}
+                  isPending={isUpdatePending}
                 />
               </TabsContent>
             </div>
