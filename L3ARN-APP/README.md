@@ -1,29 +1,126 @@
-This is a [RainbowKit](https://rainbowkit.com) + [wagmi](https://wagmi.sh) + [Next.js](https://nextjs.org/) project bootstrapped with [`create-rainbowkit`](/packages/create-rainbowkit).
+# L3ARN APP
 
-## Getting Started
+## 🎓 Overview
+The ESGI NFT Platform is a comprehensive web application designed to manage and verify academic certificates as Non-Fungible Tokens (NFTs) on the blockchain. This platform provides a seamless interface for minting, updating, and verifying academic program and performance certificates.
 
-First, run the development server:
+## 🚀 Features
+
+1. Certificate Management
+
+Program NFT Minting: Create NFTs for academic programs
+Performance NFT Minting: Generate NFTs for annual academic performance
+Status Updates: Modify certificate statuses with comments
+Verification System: Validate certificates using unique token IDs
+
+2. User Interfaces
+
+Admin Dashboard: Comprehensive management of NFTs
+My Certificates: Personal certificate gallery
+Certificate Verification: Easy certificate authentication
+
+## 🛠 Technologies
+
+1. Frontend
+
+Next.js 14
+React
+TypeScript
+Tailwind CSS
+Shadcn/UI Components
+Wagmi (Web3 Hooks)
+
+2. Blockchain Integration
+
+Solidity Smart Contracts
+OpenZeppelin
+IPFS (InterPlanetary File System)
+
+## 📦 Prerequisites
+
+Node.js (v18+)
+pnpm or npm
+Web3 Wallet (MetaMask recommended)
+
+## 🔧 Installation
+
+1. Clone the repository
 
 ```bash
+git clone https://github.com/0xNaxzerrr/L3ARN
+cd esgi-nft-platform
+```
+
+2. Install dependencies
+
+```
+pnpm install
+# or
+npm install
+```
+
+3. Set up environment variables. Create a .env.local file with:
+
+```bash
+#CONTRACT_ADDRESS
+NEXT_PUBLIC_ESGIPROGRAMNFT_ADDRESS=
+NEXT_PUBLIC_ESGIPERFORMANCENFT_ADDRESS=
+NEXT_PUBLIC_ADMIN_WALLET_ADDRESS=
+
+#PINATA
+NEXT_PUBLIC_API_KEY=
+NEXT_PUBLIC_API_SECRET=
+NEXT_PUBLIC_JWT=
+NEXT_PUBLIC_GATEAWAY_URL=
+```
+
+4. Run the development server
+
+```
+pnpm dev
+# or
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🌐 Blockchain Contracts
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+- Program NFT Contract
 
-## Learn More
+Manages academic program certificates
+Tracks program status
+Supports academic progress records
 
-To learn more about this stack, take a look at the following resources:
+- Performance NFT Contract
 
-- [RainbowKit Documentation](https://rainbowkit.com) - Learn how to customize your wallet connection flow.
-- [wagmi Documentation](https://wagmi.sh) - Learn how to interact with Ethereum.
-- [Next.js Documentation](https://nextjs.org/docs) - Learn how to build a Next.js application.
+Tracks annual academic performance
+Manages course-level details
+Supports status updates
 
-You can check out [the RainbowKit GitHub repository](https://github.com/rainbow-me/rainbowkit) - your feedback and contributions are welcome!
+- Security
 
-## Deploy on Vercel
+Ownership-based minting
+Status updates restricted to contract owner
+IPFS metadata storage
+Immutable blockchain records
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Usage Workflow
 
-Check out the [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+1. Admin
+
+Mint new Program or Performance NFTs
+Update NFT statuses
+Manage certificate lifecycle
+
+
+2. Student
+
+View personal certificates
+Authenticate certificates
+
+
+3. Verifier
+
+Validate certificates using token ID
+Check certificate authenticity
+
+## 📄 License
+Distributed under the MIT License. See LICENSE for more information.
