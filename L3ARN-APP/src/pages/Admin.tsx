@@ -1,104 +1,162 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { AdminRoute } from "@/components/AdminRoute";
-import { ipfsService } from "@/services/ipfsService";
-import { useToast } from "@/hooks/use-toast";
+import { MintForm, UploadResult } from "@/utils/interfaces/interfaces";
+import { uploadFile as uploadFileService } from "@/services/ipfs/uploadService";
+import MintingForm from "@/components/form/mintForm";
+import UpdateFormComponent from "@/components/form/updateForm";
+import { useMintESGIProgramNFT } from "@/hooks/useMintESGIProgramNFT";
+import { toast } from "@/hooks/use-toast";
 
-const Admin = () => {
-  const [isClient, setIsClient] = useState(false);
-  const [file, setFile] = useState<File | null>(null);
-  const [ipfsUrl, setIpfsUrl] = useState<string | null>(null);
-  const [uploading, setUploading] = useState(false);
-  const { toast } = useToast();
+export default function NFTManagementComponent() {
+  const [mintForm, setMintForm] = useState<MintForm>({
+    studentAddress: "",
+    programName: "",
+    startYear: 0,
+    endYear: 0,
+    file: null,
+  });
+  const [updateForm, setUpdateForm] = useState({
+    tokenId: "",
+    newStatus: "",
+  });
+
+  const [uploadResult, setUploadResult] = useState<UploadResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isReadyToMint, setIsReadyToMint] = useState(false);
+  const {
+    mintESGIProgramNFT,
+    isError,
+    isPending,
+    isSuccess,
+    transactionHash,
+    receipt,
+    isMinting,
+  } = useMintESGIProgramNFT();
 
   useEffect(() => {
-    setIsClient(true);
-  }, []);
+    if (isSuccess) {
+      toast({
+        title: "Succès",
+        description: `Le NFT a été créé avec succès. Hash de transaction: ${transactionHash}`,
+        duration: 5000,
+      });
+    } else if (isError) {
+      toast({
+        title: "Erreur",
+        description: "Une erreur s'est produite lors de la création du NFT.",
+        duration: 5000,
+      });
+    }
+  }, [isSuccess, isError, transactionHash]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    setFile(selectedFile || null);
-    setIpfsUrl(null);
+  const handleFormChange = (
+    formName: "mint" | "update",
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { name, value, files } = e.target;
+    if (formName === "mint") {
+      setMintForm((prev) => ({
+        ...prev,
+        [name]: name.includes("Year")
+          ? Number(value)
+          : files
+            ? files[0]
+            : value,
+      }));
+
+      if (name === "file" && files && files[0]) {
+        handleFileUpload(files[0]);
+      }
+    } else {
+      setUpdateForm((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
-  const uploadFile = async () => {
-    if (!file) {
-      toast({
-        title: "Aucun fichier selectionné",
-      });
-      return;
-    }
-
+  const handleFileUpload = async (file: File) => {
+    setIsUploading(true);
+    setIsReadyToMint(false);
+    setError(null);
     try {
-      setUploading(true);
-
-      const uploadResult = await ipfsService.uploadFile(file);
-
-      // Supposons que le résultat contient une URL ou un hash
-      const url =
-        uploadResult.ipfsUrl ||
-        (await ipfsService.getFileUrl(uploadResult.ipfsHash));
-
-      setIpfsUrl(url);
-      toast({
-        title: "Fichier uploadé avec succès",
-      });
+      const result = await uploadFileService(file);
+      console.log("Upload result:", result);
+      setUploadResult(result);
+      setIsReadyToMint(true);
     } catch (error) {
-      toast({
-        title: "Erreur lors du téléchargement du fichier",
-      });
-      console.error(error);
+      setError((error as any).message);
     } finally {
-      setUploading(false);
+      setIsUploading(false);
     }
   };
+
+  interface HandleSubmitEvent extends React.FormEvent<HTMLFormElement> {}
+
+  const handleSubmit = async (
+    formName: "mint" | "update",
+    e: HandleSubmitEvent
+  ) => {
+    e.preventDefault();
+    if (formName === "mint" && isReadyToMint) {
+      try {
+        console.log("Minting NFT with data:", {
+          ...mintForm,
+          ipfsUrl: uploadResult!.ipfsUrl,
+        });
+        await mintESGIProgramNFT(
+          mintForm.studentAddress,
+          mintForm.programName,
+          mintForm.startYear,
+          mintForm.endYear,
+          uploadResult!.ipfsUrl
+        );
+      } catch (error) {
+        setError((error as any).message);
+      }
+    } else if (formName === "update") {
+      console.log("Updating NFT with data:", updateForm);
+      // Ajoutez ici la logique pour mettre à jour le NFT
+    }
+  };
+
   return (
-    <AdminRoute>
-      <div className="container mx-auto px-4 py-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>Upload File to IPFS</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <Input
-                type="file"
-                onChange={handleFileChange}
-                disabled={uploading}
-              />
-              <Button
-                onClick={uploadFile}
-                disabled={uploading || !file}
-                className="w-full"
-              >
-                {uploading
-                  ? "Téléchargement en cours..."
-                  : "Télécharger sur IPFS"}
-              </Button>
-
-              {ipfsUrl && (
-                <div className="mt-4">
-                  <p className="font-semibold">URL IPFS :</p>
-                  <a
-                    href={ipfsUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 break-words"
-                  >
-                    {ipfsUrl}
-                  </a>
-                </div>
-              )}
+    <div className="flex flex-col items-center bg-gray-100 min-h-screen py-8">
+      <h1 className="text-3xl font-bold mb-8">Gestion des NFTs ESGI</h1>
+      <Card className="w-[400px]">
+        <CardContent className="pt-6">
+          <Tabs defaultValue="mint" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-6">
+              <TabsTrigger value="mint">Minter un NFT</TabsTrigger>
+              <TabsTrigger value="update">Modifier un NFT</TabsTrigger>
+            </TabsList>
+            <div className="mt-6">
+              <TabsContent value="mint">
+                <MintingForm
+                  mintForm={mintForm}
+                  handleFormChange={handleFormChange}
+                  handleSubmit={handleSubmit}
+                  isUploading={isUploading}
+                  isReadyToMint={isReadyToMint}
+                  isPending={isPending}
+                />
+              </TabsContent>
+              <TabsContent value="update">
+                <UpdateFormComponent
+                  updateForm={updateForm}
+                  handleFormChange={handleFormChange}
+                  handleSubmit={handleSubmit}
+                />
+              </TabsContent>
             </div>
-          </CardContent>
-        </Card>
-      </div>
-    </AdminRoute>
+          </Tabs>
+        </CardContent>
+      </Card>
+      {error && <p className="text-red-500 mt-4">{error}</p>}
+    </div>
   );
-};
-
-export default Admin;
+}

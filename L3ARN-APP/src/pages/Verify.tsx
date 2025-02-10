@@ -1,3 +1,5 @@
+"use client";
+
 import React, { ReactNode, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -7,21 +9,25 @@ import useGetESGICertificates from "@/hooks/useGetESGICertificates";
 
 const Verify = () => {
   const [certificateId, setCertificateId] = useState("");
-  const [certificateIdToVerify, setCertificateIdToVerify] = useState<number | undefined>(undefined);
+  const [certificateIdToVerify, setCertificateIdToVerify] = useState<
+    number | undefined
+  >(undefined);
 
   // Typage explicite de tokenExists
-  const { 
-    tokenExists, 
-    isLoading: isVerifyLoading, 
-    isError: isVerifyError 
+  const {
+    tokenExists,
+    isLoading: isVerifyLoading,
+    isError: isVerifyError,
   } = useVerifyESGICertificates(
-    certificateIdToVerify !== undefined ? Number(certificateIdToVerify) : undefined
+    certificateIdToVerify !== undefined
+      ? Number(certificateIdToVerify)
+      : undefined
   );
 
-  const { 
-    programDetails, 
-    isLoading: isDetailsLoading, 
-    isError: isDetailsError 
+  const {
+    programDetails,
+    isLoading: isDetailsLoading,
+    isError: isDetailsError,
   } = useGetESGICertificates(
     tokenExists ? Number(certificateIdToVerify) : undefined
   );
@@ -44,14 +50,12 @@ const Verify = () => {
 
     if (isVerifyLoading) return <p>Vérification en cours...</p>;
     if (isVerifyError) return <p>Erreur lors de la vérification</p>;
-    
+
     // Gérer explicitement le cas où tokenExists est défini
     if (tokenExists !== undefined) {
       return (
         <p>
-          {tokenExists 
-            ? "Ce certificat existe" 
-            : "Ce certificat n'existe pas"}
+          {tokenExists ? "Ce certificat existe" : "Ce certificat n'existe pas"}
         </p>
       );
     }
@@ -63,10 +67,10 @@ const Verify = () => {
   const renderCertificateDetails = (): ReactNode => {
     // Ne pas afficher si le token n'existe pas
     if (!tokenExists) return null;
-    
+
     if (isDetailsLoading) return <p>Chargement des détails...</p>;
     if (isDetailsError) return <p>Erreur lors du chargement des détails</p>;
-    
+
     if (programDetails) {
       return (
         <div className="space-y-2">
@@ -74,7 +78,8 @@ const Verify = () => {
             <strong>Programme :</strong> {programDetails.programName}
           </p>
           <p>
-            <strong>Année de début :</strong> {programDetails.startYear.toString()}
+            <strong>Année de début :</strong>{" "}
+            {programDetails.startYear.toString()}
           </p>
           <p>
             <strong>Année de fin :</strong> {programDetails.endYear.toString()}
@@ -85,19 +90,19 @@ const Verify = () => {
         </div>
       );
     }
-    
+
     return null;
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="flex flex-col items-center bg-gray-100 min-h-screen py-8">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold mb-4">Verify</h1>
         <p className="text-xl text-gray-600">
           Enter the certificate ID to retrieve the associated NFT
         </p>
       </div>
-      
+
       <Card className="max-w-md mx-auto mb-8">
         <CardHeader>
           <CardTitle>Enter Certificate ID</CardTitle>
@@ -122,9 +127,7 @@ const Verify = () => {
             <CardHeader>
               <CardTitle>Verification Result</CardTitle>
             </CardHeader>
-            <CardContent>
-              {renderVerificationResult()}
-            </CardContent>
+            <CardContent>{renderVerificationResult()}</CardContent>
           </Card>
 
           {tokenExists && (
@@ -132,9 +135,7 @@ const Verify = () => {
               <CardHeader>
                 <CardTitle>Certificate Details</CardTitle>
               </CardHeader>
-              <CardContent>
-                {renderCertificateDetails()}
-              </CardContent>
+              <CardContent>{renderCertificateDetails()}</CardContent>
             </Card>
           )}
         </div>

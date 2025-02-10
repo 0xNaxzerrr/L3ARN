@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import useGetESGICertificates from "@/hooks/useGetESGICertificates";
@@ -25,9 +26,8 @@ const MyCertificates = () => {
       },
     ]);
   }, [programDetails]);
-
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 bg-gray-100 min-h-screen">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold mb-4">My certificates</h1>
         <p className="text-xl text-gray-600">
@@ -48,9 +48,9 @@ const MyCertificates = () => {
                 </p>
                 <p>
                   <strong>End Year :</strong> {cert.endYear}
-                  <p>
-                    <strong>Status :</strong> {cert.status}
-                  </p>
+                </p>
+                <p>
+                  <strong>Status :</strong> {cert.status}
                 </p>
               </div>
             </CardContent>

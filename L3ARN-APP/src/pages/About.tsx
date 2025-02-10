@@ -1,5 +1,6 @@
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+"use client";
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const About = () => {
   return (
@@ -12,9 +13,11 @@ const About = () => {
         </CardHeader>
         <CardContent>
           <p className="text-gray-600 mb-4">
-            L3ARN is an innovative blockchain-based platform designed to revolutionize academic certification through decentralized, 
-            verifiable, and immutable digital certificates. Built on Avalanche subnet technology, our platform provides a secure and 
-            transparent solution for issuing, managing, and validating academic credentials.
+            L3ARN is an innovative blockchain-based platform designed to
+            revolutionize academic certification through decentralized,
+            verifiable, and immutable digital certificates. Built on Avalanche
+            subnet technology, our platform provides a secure and transparent
+            solution for issuing, managing, and validating academic credentials.
           </p>
         </CardContent>
       </Card>
