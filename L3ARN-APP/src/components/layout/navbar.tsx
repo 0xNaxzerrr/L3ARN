@@ -1,23 +1,31 @@
 "use client";
 
-import React from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useAdminAccess } from '@/hooks/useAdminAccess'
+import React, { useEffect } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useAdminAccess } from "@/hooks/useAdminAccess";
 
 const Navbar = () => {
-  const { isAdmin } = useAdminAccess()
+  const { isAdmin } = useAdminAccess();
   const pathname = usePathname();
-
-  const navigationItems = [
-    { label: 'Home', href: '/' },
-    { label: 'My Certificates', href: '/MyCertificates' },
-    { label: 'Verify', href: '/Verify' },
-    ...(isAdmin ? [{ label: 'Admin', href: '/Admin' }] : []),
-  ];
+  const [navigationItems, setNavigationItems] = React.useState<
+    Array<{ label: string; href: string }>
+  >([
+    { label: "Home", href: "/" },
+    { label: "My Certificates", href: "/MyCertificates" },
+    { label: "Verify", href: "/Verify" },
+  ]);
+  useEffect(() => {
+    if (isAdmin) {
+      setNavigationItems([
+        ...navigationItems,
+        { label: "Admin", href: "/Admin" },
+      ]);
+    }
+  }, [isAdmin]);
 
   return (
     <nav className="border-b">
@@ -35,10 +43,10 @@ const Navbar = () => {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'px-3 py-2 rounded-md text-sm font-medium transition-colors',
+                  "px-3 py-2 rounded-md text-sm font-medium transition-colors",
                   pathname === item.href
-                    ? 'bg-primary text-primary-foreground'
-                    : 'hover:bg-accent hover:text-accent-foreground'
+                    ? "bg-primary text-primary-foreground"
+                    : "hover:bg-accent hover:text-accent-foreground"
                 )}
               >
                 {item.label}
@@ -47,7 +55,7 @@ const Navbar = () => {
           </div>
 
           {/* Connect Wallet Button */}
-        <ConnectButton/>
+          <ConnectButton />
 
           {/* Mobile Menu Button */}
           <button className="md:hidden p-2">
@@ -73,10 +81,10 @@ const Navbar = () => {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'block px-3 py-2 rounded-md text-base font-medium',
+                  "block px-3 py-2 rounded-md text-base font-medium",
                   pathname === item.href
-                    ? 'bg-primary text-primary-foreground'
-                    : 'hover:bg-accent hover:text-accent-foreground'
+                    ? "bg-primary text-primary-foreground"
+                    : "hover:bg-accent hover:text-accent-foreground"
                 )}
               >
                 {item.label}
@@ -85,7 +93,7 @@ const Navbar = () => {
             <Button
               variant="outline"
               className="w-full mt-4"
-              onClick={() => console.log('Connect wallet clicked')}
+              onClick={() => console.log("Connect wallet clicked")}
             >
               Connect Wallet
             </Button>
