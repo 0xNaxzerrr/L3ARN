@@ -6,15 +6,17 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { useAdminAccess } from '@/hooks/useAdminAccess'
 
 const Navbar = () => {
+  const { isAdmin } = useAdminAccess()
   const pathname = usePathname();
 
   const navigationItems = [
     { label: 'Home', href: '/' },
     { label: 'My Certificates', href: '/MyCertificates' },
     { label: 'Verify', href: '/Verify' },
-    { label: 'Admin', href: '/Admin' },
+    ...(isAdmin ? [{ label: 'Admin', href: '/Admin' }] : []),
   ];
 
   return (
