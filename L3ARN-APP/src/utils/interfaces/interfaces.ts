@@ -38,4 +38,5 @@ export interface UpdateFormProps {
     formName: "update",
     e: React.FormEvent<HTMLFormElement>
   ) => void;
+  isPending: boolean;
 }
