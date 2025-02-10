@@ -1,52 +1,57 @@
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import React, { useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import useGetESGICertificates from "@/hooks/useGetESGICertificates";
 
 const MyCertificates = () => {
-  // TODO: Implement wallet connection and NFT fetching using wagmi hooks
-  const mockCertificates = [
-    {
-      id: '1',
-      title: 'Blockchain Development',
-      student: 'John Doe',
-      date: '2024-02-09',
-      grade: 'A+'
-    },{
-      id: '1',
-      title: 'Blockchain Development',
-      student: 'John Doe',
-      date: '2024-02-09',
-      grade: 'A+'
-    },{
-      id: '1',
-      title: 'Blockchain Development',
-      student: 'John Doe',
-      date: '2024-02-09',
-      grade: 'A+'
-    },
-    // Add more mock data as needed
-  ];
+  const [certificates, setCertificates] = React.useState<
+    Array<{
+      id: string;
+      programName: string;
+      startYear: string;
+      endYear: string;
+      status: string;
+    }>
+  >([]);
+
+  const { programDetails, isLoading, isError } = useGetESGICertificates(0);
+  useEffect(() => {
+    setCertificates([
+      {
+        id: "0",
+        programName: programDetails?.programName as string,
+        startYear: programDetails?.startYear.toString() as string,
+        endYear: programDetails?.endYear.toString() as string,
+        status: programDetails?.status as string,
+      },
+    ]);
+  }, [programDetails]);
 
   return (
     <div className="container mx-auto px-4 py-8">
-
-    <div className="text-center mb-12">
-      <h1 className="text-4xl font-bold mb-4">My certificates</h1>
-      <p className="text-xl text-gray-600">Connect your wallet and see your NFT's Certificates</p>
-    </div>
+      <div className="text-center mb-12">
+        <h1 className="text-4xl font-bold mb-4">My certificates</h1>
+        <p className="text-xl text-gray-600">
+          Connect your wallet and see your NFT's Certificates
+        </p>
+      </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {mockCertificates.map((cert) => (
+        {certificates.map((cert) => (
           <Card key={cert.id}>
             <CardHeader>
-              <CardTitle>{cert.title}</CardTitle>
+              <CardTitle>{cert.programName}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                <p><strong>Certificate ID:</strong> {cert.id}</p>
-                <p><strong>Student:</strong> {cert.student}</p>
-                <p><strong>Issue Date:</strong> {cert.date}</p>
-                <p><strong>Grade:</strong> {cert.grade}</p>
+                <p>
+                  <strong>Start Year :</strong> {cert.startYear}
+                </p>
+                <p>
+                  <strong>End Year :</strong> {cert.endYear}
+                  <p>
+                    <strong>Status :</strong> {cert.status}
+                  </p>
+                </p>
               </div>
             </CardContent>
           </Card>
