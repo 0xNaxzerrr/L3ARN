@@ -42,6 +42,11 @@ export const ESGICertificatesAbi = [
         internalType: "struct ESGIProgramNFT.ProgramDetails",
         components: [
           {
+            name: "studentWallet",
+            type: "address",
+            internalType: "address",
+          },
+          {
             name: "programName",
             type: "string",
             internalType: "string",
@@ -52,7 +57,143 @@ export const ESGICertificatesAbi = [
             internalType: "uint256",
           },
           { name: "endYear", type: "uint256", internalType: "uint256" },
-          { name: "status", type: "string", internalType: "string" },
+          {
+            name: "academicProgresses",
+            type: "tuple[]",
+            internalType: "struct ESGIProgramNFT.AcademicProgress[]",
+            components: [
+              {
+                name: "studentId",
+                type: "string",
+                internalType: "string",
+              },
+              {
+                name: "tokenId",
+                type: "string",
+                internalType: "string",
+              },
+              { name: "year", type: "string", internalType: "string" },
+              { name: "nftId", type: "string", internalType: "string" },
+              {
+                name: "ipfsCid",
+                type: "string",
+                internalType: "string",
+              },
+            ],
+          },
+          {
+            name: "programStatus",
+            type: "tuple",
+            internalType: "struct ESGIProgramNFT.ProgramStatus",
+            components: [
+              {
+                name: "status",
+                type: "uint8",
+                internalType: "enum ESGIProgramNFT.Status",
+              },
+              {
+                name: "certificateIssuedDate",
+                type: "uint256",
+                internalType: "uint256",
+              },
+              {
+                name: "comments",
+                type: "string",
+                internalType: "string",
+              },
+            ],
+          },
+          { name: "ipfsCID", type: "string", internalType: "string" },
+          { name: "issuer", type: "string", internalType: "string" },
+          { name: "signer", type: "address", internalType: "address" },
+        ],
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getStudentNFTCount",
+    inputs: [{ name: "student", type: "address", internalType: "address" }],
+    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getStudentNFTs",
+    inputs: [{ name: "student", type: "address", internalType: "address" }],
+    outputs: [
+      { name: "tokens", type: "uint256[]", internalType: "uint256[]" },
+      {
+        name: "details",
+        type: "tuple[]",
+        internalType: "struct ESGIProgramNFT.ProgramDetails[]",
+        components: [
+          {
+            name: "studentWallet",
+            type: "address",
+            internalType: "address",
+          },
+          {
+            name: "programName",
+            type: "string",
+            internalType: "string",
+          },
+          {
+            name: "startYear",
+            type: "uint256",
+            internalType: "uint256",
+          },
+          { name: "endYear", type: "uint256", internalType: "uint256" },
+          {
+            name: "academicProgresses",
+            type: "tuple[]",
+            internalType: "struct ESGIProgramNFT.AcademicProgress[]",
+            components: [
+              {
+                name: "studentId",
+                type: "string",
+                internalType: "string",
+              },
+              {
+                name: "tokenId",
+                type: "string",
+                internalType: "string",
+              },
+              { name: "year", type: "string", internalType: "string" },
+              { name: "nftId", type: "string", internalType: "string" },
+              {
+                name: "ipfsCid",
+                type: "string",
+                internalType: "string",
+              },
+            ],
+          },
+          {
+            name: "programStatus",
+            type: "tuple",
+            internalType: "struct ESGIProgramNFT.ProgramStatus",
+            components: [
+              {
+                name: "status",
+                type: "uint8",
+                internalType: "enum ESGIProgramNFT.Status",
+              },
+              {
+                name: "certificateIssuedDate",
+                type: "uint256",
+                internalType: "uint256",
+              },
+              {
+                name: "comments",
+                type: "string",
+                internalType: "string",
+              },
+            ],
+          },
+          { name: "ipfsCID", type: "string", internalType: "string" },
+          { name: "issuer", type: "string", internalType: "string" },
+          { name: "signer", type: "address", internalType: "address" },
         ],
       },
     ],
@@ -76,7 +217,22 @@ export const ESGICertificatesAbi = [
       { name: "programName", type: "string", internalType: "string" },
       { name: "startYear", type: "uint256", internalType: "uint256" },
       { name: "endYear", type: "uint256", internalType: "uint256" },
+      {
+        name: "_academicProgresses",
+        type: "tuple[]",
+        internalType: "struct ESGIProgramNFT.AcademicProgress[]",
+        components: [
+          { name: "studentId", type: "string", internalType: "string" },
+          { name: "tokenId", type: "string", internalType: "string" },
+          { name: "year", type: "string", internalType: "string" },
+          { name: "nftId", type: "string", internalType: "string" },
+          { name: "ipfsCid", type: "string", internalType: "string" },
+        ],
+      },
+      { name: "_ipfsCID", type: "string", internalType: "string" },
+      { name: "_issuer", type: "string", internalType: "string" },
       { name: "tokenURI", type: "string", internalType: "string" },
+      { name: "_comments", type: "string", internalType: "string" },
     ],
     outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
     stateMutability: "nonpayable",
@@ -107,10 +263,35 @@ export const ESGICertificatesAbi = [
     name: "programDetails",
     inputs: [{ name: "", type: "uint256", internalType: "uint256" }],
     outputs: [
+      {
+        name: "studentWallet",
+        type: "address",
+        internalType: "address",
+      },
       { name: "programName", type: "string", internalType: "string" },
       { name: "startYear", type: "uint256", internalType: "uint256" },
       { name: "endYear", type: "uint256", internalType: "uint256" },
-      { name: "status", type: "string", internalType: "string" },
+      {
+        name: "programStatus",
+        type: "tuple",
+        internalType: "struct ESGIProgramNFT.ProgramStatus",
+        components: [
+          {
+            name: "status",
+            type: "uint8",
+            internalType: "enum ESGIProgramNFT.Status",
+          },
+          {
+            name: "certificateIssuedDate",
+            type: "uint256",
+            internalType: "uint256",
+          },
+          { name: "comments", type: "string", internalType: "string" },
+        ],
+      },
+      { name: "ipfsCID", type: "string", internalType: "string" },
+      { name: "issuer", type: "string", internalType: "string" },
+      { name: "signer", type: "address", internalType: "address" },
     ],
     stateMutability: "view",
   },
@@ -198,7 +379,12 @@ export const ESGICertificatesAbi = [
     name: "updateProgramStatus",
     inputs: [
       { name: "tokenId", type: "uint256", internalType: "uint256" },
-      { name: "newStatus", type: "string", internalType: "string" },
+      {
+        name: "newStatus",
+        type: "uint8",
+        internalType: "enum ESGIProgramNFT.Status",
+      },
+      { name: "comments", type: "string", internalType: "string" },
     ],
     outputs: [],
     stateMutability: "nonpayable",
