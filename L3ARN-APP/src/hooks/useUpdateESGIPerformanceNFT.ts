@@ -1,8 +1,8 @@
-// hooks/useUpdateESGIProgramNFT.ts
+// hooks/useUpdateESGIPerformanceNFT.ts
 import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
-import { ESGICertificatesAbi } from "@/utils/abis/ESGICertificates";
+import { ESGIAnnualPerformanceAbi } from "@/utils/abis/ESGIAnnualPerformance";
 
-export const useUpdateESGIProgramNFT = () => {
+export const useUpdateESGIPerformanceNFT = () => {
   const {
     writeContract,
     data: hash,
@@ -19,24 +19,24 @@ export const useUpdateESGIProgramNFT = () => {
     hash: hash as `0x${string}` | undefined,
   });
 
-  async function updateESGIProgramNFT(
+  async function updateESGIPerformanceNFT(
     tokenId: number,
     newStatus: number,
     comments: string
   ) {
     try {
       const result = await writeContract({
-        abi: ESGICertificatesAbi,
+        abi: ESGIAnnualPerformanceAbi,
         address: process.env
-          .NEXT_PUBLIC_ESGIPROGRAMNFT_ADDRESS as `0x${string}`,
-        functionName: "updateProgramStatus",
+          .NEXT_PUBLIC_ESGIPERFORMANCENFT_ADDRESS as `0x${string}`,
+        functionName: "updateAcademicStatus",
         args: [
           BigInt(tokenId),
-          newStatus, // Doit correspondre à l'enum Status du contrat
+          newStatus, // Doit correspondre à l'enum AcademicStatus du contrat
           comments,
         ],
       });
-      console.log("Mise à jour du NFT initiée:", result);
+      console.log("Mise à jour du NFT de performance initiée:", result);
       return result;
     } catch (error) {
       console.error("Erreur de mise à jour:", error);
@@ -45,7 +45,7 @@ export const useUpdateESGIProgramNFT = () => {
   }
 
   return {
-    updateESGIProgramNFT,
+    updateESGIPerformanceNFT,
     isError: isWriteError || isReceiptError,
     isPending: isWritePending || isWaiting,
     isSuccess,

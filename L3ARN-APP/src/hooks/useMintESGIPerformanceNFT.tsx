@@ -1,8 +1,8 @@
-// hooks/useMintESGIProgramNFT.ts
+// hooks/useMintESGIPerformanceNFT.ts
 import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
-import { ESGICertificatesAbi } from "@/utils/abis/ESGICertificates";
+import { ESGIAnnualPerformanceAbi } from "@/utils/abis/ESGIAnnualPerformance";
 
-export const useMintESGIProgramNFT = () => {
+export const useMintESGIPerformanceNFT = () => {
   const {
     writeContract,
     data: hash,
@@ -19,33 +19,41 @@ export const useMintESGIProgramNFT = () => {
     hash: hash as `0x${string}` | undefined,
   });
 
-  async function mintESGIProgramNFT(
+  async function mintESGIPerformanceNFT(
     studentAddress: string,
-    programName: string,
-    startYear: number,
-    endYear: number,
+    programTokenId: number,
+    year: string,
+    studentId: string,
+    studentName: string,
+    courses: any[], // Ajustez le type selon votre structure
+    yearStartDate: number,
+    yearEndDate: number,
+    status: number, // 0 pour SUCCESS, 1 pour FAILED
+    statusComments: string,
     ipfsCID: string,
     issuer: string,
-    tokenURI: string,
-    comments: string,
-    academicProgresses: any[] // Ajustez le type selon votre structure
+    tokenURI: string
   ) {
     try {
       const result = await writeContract({
-        abi: ESGICertificatesAbi,
+        abi: ESGIAnnualPerformanceAbi,
         address: process.env
-          .NEXT_PUBLIC_ESGIPROGRAMNFT_ADDRESS as `0x${string}`,
-        functionName: "mintProgramNFT",
+          .NEXT_PUBLIC_ESGIPERFORMANCENFT_ADDRESS as `0x${string}`,
+        functionName: "mintAnnualPerformanceNFT",
         args: [
           studentAddress,
-          programName,
-          BigInt(startYear),
-          BigInt(endYear),
-          academicProgresses,
+          BigInt(programTokenId),
+          year,
+          studentId,
+          studentName,
+          courses,
+          BigInt(yearStartDate),
+          BigInt(yearEndDate),
+          status,
+          statusComments,
           ipfsCID,
           issuer,
           tokenURI,
-          comments,
         ],
       });
       return result;
@@ -56,7 +64,7 @@ export const useMintESGIProgramNFT = () => {
   }
 
   return {
-    mintESGIProgramNFT,
+    mintESGIPerformanceNFT,
     isError: isWriteError || isReceiptError,
     isPending: isWritePending || isWaiting,
     isSuccess,
