@@ -1,46 +1,31 @@
-import { NextRequest, NextResponse } from 'next/server'
-import {PinataSDK} from 'pinata'
+// src/app/api/url/route.ts
+import { NextRequest, NextResponse } from "next/server";
+import { pinata } from "@/utils/ipfs/config";
+
+export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
   try {
-    // Initialiser Pinata
-    const pinata = new PinataSDK({
-      pinataJwt: process.env.PINATA_JWT
+    // Récupérer le nom du fichier depuis le corps de la requête
+    const { filename } = await request.json();
+
+    console.log("Attempting to create signed upload URL for file:", filename);
+
+    const url = await pinata.upload.createSignedURL({
+      expires: 30, // Expiration en secondes
+      name: filename || "Uploaded File", // Utilisez le nom du fichier ou un nom par défaut
     });
 
-    // Récupérer le fichier
-    const data = await request.formData()
-    const file: File | null = data.get('file') as unknown as File
-
-    if (!file) {
-      return NextResponse.json({ error: 'No file uploaded' }, { status: 400 })
-    }
-
-    // Convertir le fichier en buffer
-    const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
-
-    // Uploader sur Pinata
-    const uploadResult = await pinata.pinFileToIPFS(buffer, {
-      pinataMetadata: {
-        name: file.name
-      },
-      pinataOptions: {
-        cidVersion: 0
-      }
-    })
-
-    // Retourner l'URL IPFS
-    return NextResponse.json({
-      ipfsHash: uploadResult.IpfsHash,
-      ipfsUrl: `https://gateway.pinata.cloud/ipfs/${uploadResult.IpfsHash}`
-    })
-
+    console.log("Signed URL created successfully");
+    return NextResponse.json({ url }, { status: 200 });
   } catch (error) {
-    console.error('Upload error:', error)
+    console.error("URL Creation Detailed Error:", error);
     return NextResponse.json(
-      { error: 'File upload failed', details: error },
+      {
+        error: "Failed to create upload URL",
+        details: error instanceof Error ? error.message : String(error),
+      },
       { status: 500 }
-    )
+    );
   }
 }

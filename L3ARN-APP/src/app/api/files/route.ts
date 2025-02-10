@@ -1,44 +1,20 @@
-import { NextRequest, NextResponse } from "next/server";
-import { PinataSDK } from "pinata";
+import { NextResponse, type NextRequest } from "next/server";
+import { pinata } from "@/utils/ipfs/config"
 
 export async function POST(request: NextRequest) {
   try {
-    // Initialiser Pinata
-    const pinata = new PinataSDK({
-      pinataJwt: process.env.PINATA_JWT,
-    });
-
-    // Récupérer le fichier
     const data = await request.formData();
     const file: File | null = data.get("file") as unknown as File;
-
-    if (!file) {
-      return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
-    }
-
-    // Convertir le fichier en buffer
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
-    // Uploader sur Pinata
-    const uploadResult = await pinata.pinFileToIPFS(buffer, {
-      pinataMetadata: {
-        name: file.name,
-      },
-      pinataOptions: {
-        cidVersion: 0,
-      },
-    });
-
-    // Retourner l'URL IPFS
-    return NextResponse.json({
-      ipfsHash: uploadResult.IpfsHash,
-      ipfsUrl: `https://gateway.pinata.cloud/ipfs/${uploadResult.IpfsHash}`,
-    });
-  } catch (error) {
-    console.error("Upload error:", error);
+    const uploadData = await pinata.upload.file(file)
+    const url = await pinata.gateways.createSignedURL({
+     	cid: uploadData.cid,
+     	expires: 3600,
+  	});
+    return NextResponse.json(url, { status: 200 });
+  } catch (e) {
+    console.log(e);
     return NextResponse.json(
-      { error: "File upload failed", details: error },
+      { error: "Internal Server Error" },
       { status: 500 }
     );
   }
