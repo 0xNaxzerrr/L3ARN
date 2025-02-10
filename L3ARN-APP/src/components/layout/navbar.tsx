@@ -24,6 +24,10 @@ const Navbar = () => {
         ...navigationItems,
         { label: "Admin", href: "/Admin" },
       ]);
+    } else {
+      setNavigationItems(
+        navigationItems.filter((item) => item.href !== "/Admin")
+      );
     }
   }, [isAdmin]);
 
