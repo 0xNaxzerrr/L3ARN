@@ -1,159 +1,122 @@
-# L3ARN - Blockchain Academic Certification Platform
+# L3ARN 🎓
 
-## Project Overview
+A blockchain-based academic certification system that issues and manages both Program NFTs and Annual Performance NFTs for ESGI students.
 
-L3ARN is an innovative blockchain-based platform designed to revolutionize academic certification through decentralized, verifiable, and immutable digital certificates. By leveraging Avalanche subnet technology and smart contracts, L3ARN provides a secure and transparent solution for issuing, managing, and validating academic credentials.
+## Overview 📋
 
-## Key Features
+This project consists of two main smart contracts:
+- `ESGIProgramNFT`: Manages overall program certificates
+- `ESGIAnnualPerformanceNFT`: Handles annual academic performance certificates
 
-- 🎓 Decentralized Academic Certificates
-- 🔒 Immutable and Verifiable Credentials
-- 🌐 Avalanche Subnet Integration
-- 🚀 NFT-Based Certificate Management
-- 🔐 Role-Based Access Control
+## Features ✨
 
-## Prerequisites
+### Program NFT
+- Represents the complete academic program
+- Tracks program status (ACTIVE/SUCCESS/REVOKED)
+- Stores academic progress records
+- Links to IPFS metadata
 
-### Software Requirements
-- [Avalanche CLI](https://docs.avax.network/subnets/install-avalanche-cli)
+### Annual Performance NFT
+- Records detailed course performance
+- Tracks individual grades and comments
+- Stores course-specific achievements
+- Links academic performance to program NFTs
+
+## Contract Addresses 🏠
+
+**ESGI Test Network**
+- Program NFT: `0x1d453b35cd5b105Dbf040ccf030c79E56B278ca9`
+- Performance NFT: `0x2a330a7D678D549c9F88aAA518F458bD2F4FDf12`
+
+## Prerequisites 🛠
+
 - [Foundry](https://book.getfoundry.sh/getting-started/installation)
-- [Rust](https://www.rust-lang.org/tools/install)
-- [Node.js](https://nodejs.org/) (v16+)
-- [Cast](https://book.getfoundry.sh/reference/cast)
+- [Node.js](https://nodejs.org/) (>= 14.0.0)
+- Git
 
-### System Requirements
-- 8GB RAM
-- 4 CPU Cores
-- 50GB SSD Storage
-- macOS, Linux, or Windows (WSL2)
+## Installation 📦
 
-## Installation Steps
-
-### 1. Install Avalanche CLI
 ```bash
-curl -sSfL https://raw.githubusercontent.com/ava-labs/avalanche-cli/main/scripts/install.sh | sh -s
+# Clone the repository
+git clone <your-repo-url>
+cd L3ARN-CONTRACTS
+
+# Install dependencies
+forge install
 ```
 
-### 2. Install Foundry
+
+## Configuration ⚙️ 
+
+1. Create a .env file:
+
 ```bash
-curl -L https://foundry.paradigm.xyz | bash
-source ~/.bashrc
-foundryup
+RPC_URL=your_rpc_url
+PRIVATE_KEY=your_private_key
+CHAIN_ID=your_chain_id
 ```
 
-### 3. Clone the L3ARN Repository
+2. Configure foundry.toml
+
 ```bash
-git clone https://github.com/your-username/L3ARN.git
-cd L3ARN
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+remappings = [
+    "@openzeppelin/=lib/openzeppelin-contracts/",
+    "ds-test/=lib/forge-std/lib/ds-test/src/",
+    "forge-std/=lib/forge-std/src/",
+]
+viaIr = true
+optimizer = true
+optimizer_runs = 200
+
+[rpc_endpoints]
+esgi = "${RPC_URL}"
 ```
 
-## Blockchain and Subnet Setup
+## Deployment 🚀
 
-### Create Subnet Configuration
 ```bash
-# Create a new subnet
-avalanche subnet create l3arn-subnet
-
-# Follow the interactive prompts:
-# - Choose SubnetEVM
-# - Configure custom chain parameters
-# - Set native token details
+# Deploy contracts
+forge script script/Deploy.s.sol:DeployESGICertificates \
+    --rpc-url $RPC_URL \
+    --private-key $PRIVATE_KEY \
+    --broadcast \
+    -vvvv
 ```
 
-### Deploy Subnet Locally
+## Testing 🧪
 ```bash
-# Deploy the subnet to local network
-avalanche subnet deploy l3arn-subnet
+# Run all tests
+forge test
 
-# Select "Local" deployment option
-# Note the RPC URL and blockchain details
+# Run tests with gas reporting
+forge test --gas-report
+
+# Run tests with specific verbosity
+forge test -vvvv
+
+# Run coverage
+forge coverage --via-ir
 ```
 
-## Smart Contract Development
+## Reference
 
-### Install Dependencies
-```bash
-# Initialize Foundry project
-forge init
+### ESGIProgramNFT Methods
 
-# Install OpenZeppelin contracts
-forge install OpenZeppelin/openzeppelin-contracts
-```
+- mintProgramNFT: Mint a new program certificate
+- updateProgramStatus: Update program status
+- getProgramDetails: Get program details
+- getStudentNFTs: Get all NFTs owned by a student
 
-### Compile Smart Contract
-```bash
-forge build
-```
+### ESGIAnnualPerformanceNFT Methods
 
-### Deploy Smart Contract
-```bash
-# Set your private key
-export PRIVATE_KEY=your_private_key_here
+- mintAnnualPerformanceNFT: Mint a new performance certificate
+- updateAcademicStatus: Update academic status
+- getAnnualPerformanceDetails: Get performance details
+- getStudentNFTCount: Get number of NFTs owned by a student
 
-# Deploy to local subnet
-forge script script/DeployESGICertificate.s.sol:DeployESGICertificate \
-  --rpc-url [LOCAL_SUBNET_RPC_URL] \
-  --broadcast
-```
-
-## Interacting with the Contract
-
-### Issue a Certificate
-```bash
-cast send [CONTRACT_ADDRESS] "issueCertificate(address,string,uint256,string,string,string)" \
-  [RECIPIENT_ADDRESS] \
-  "John Doe" \
-  123456 \
-  "Blockchain Development" \
-  "A+" \
-  "ipfs://metadata_uri" \
-  --rpc-url [LOCAL_SUBNET_RPC_URL] \
-  --private-key [YOUR_PRIVATE_KEY]
-```
-
-### Retrieve Certificate Details
-```bash
-# Get certificate data
-cast call [CONTRACT_ADDRESS] "getCertificateData(uint256)(tuple)" 0
-
-# Get student certificates
-cast call [CONTRACT_ADDRESS] "getStudentCertificates(uint256)(uint256[])" 123456
-```
-
-## Subnet Management
-
-### Stop Subnet
-```bash
-avalanche subnet stop l3arn-subnet
-```
-
-### Start Subnet
-```bash
-avalanche subnet start l3arn-subnet
-```
-
-## Security Considerations
-
-- Never commit private keys to version control
-- Use environment variables for sensitive data
-- Implement proper access controls
-- Regularly audit smart contract code
-
-## Roadmap
-
-- [ ] IPFS Integration
-- [ ] Multi-Signature Certificate Issuance
-- [ ] Cross-Subnet Verification
-- [ ] Web Interface Development
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
-
-## License
-
-This project is licensed under the MIT License.
+## License 📜
+MIT
